@@ -14,7 +14,7 @@ class ListNode(Node):
 
     def __init__(self, data: Any):
         super().__init__(data)
-        self.list: 'List' = None
+        self.list: "List" = None
         self.next: Self = None
 
 
@@ -49,7 +49,7 @@ class List:
             yield node
             node = node.next
 
-    @getattr
+    @property
     def size(self) -> int:
         """
         Dimensione della lista.
@@ -68,6 +68,7 @@ class ListDisjointSets(DisjointSetsInterface):
     """
     Implementazione di insiemi disgiunti tramite liste concatenate.
     """
+
     def find_set(self, node: ListNode) -> ListNode:
         return node.list.first
 
@@ -87,6 +88,7 @@ class HeuristicDisjointSets(ListDisjointSets):
     Implementazione di insiemi disgiunti tramite liste concatenate
     con euristica dell'unione pesata.
     """
+
     def union(self, node_1: ListNode, node_2: ListNode) -> ListNode:
         if node_1.list.size > node_2.list.size:
             node_1.list.merge(node_2.list)

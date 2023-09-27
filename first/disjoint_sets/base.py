@@ -11,7 +11,7 @@ class Node:
     """
 
     def __init__(self, data: Any):
-        self.data : Any = data
+        self.data: Any = data
 
 
 class DisjointSetsInterface:
