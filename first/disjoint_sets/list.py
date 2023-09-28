@@ -93,5 +93,5 @@ class HeuristicDisjointSets(ListDisjointSets):
         if list_1.get_size() > list_2.get_size():
             list_1.merge(list_2)
             return node_1
-        list_1.merge(list_2)
+        list_2.merge(list_1)
         return node_2

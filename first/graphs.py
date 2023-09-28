@@ -101,10 +101,10 @@ class Graph:
         diretto i.e. [n*(n-1)]/2 con n il numero di vertici.
         """
         graph = cls(n_vertices)
-        max_edges = n_vertices * (n_vertices - 1) / 2
+        max_connections = n_vertices * (n_vertices - 1) / 2
         if n_connections is None:
-            n_edges = random.randint(1, max_edges)
-        n_connections = max(max_edges, n_connections)
+            n_connections = random.randint(1, max_connections)
+        n_connections = max(max_connections, n_connections)
         for sample in np.random.default_rng().choice(
             np.fromiter(combinations(range(n_vertices), 2), tuple), int(n_connections)
         ):
