@@ -2,6 +2,8 @@
 Modulo per la gestione dei grafi non diretti (non orientati).
 """
 import random
+import numpy as np
+from itertools import combinations
 from typing import Any, Type, Self
 
 from disjoint_sets import DisjointSetsInterface
@@ -16,8 +18,7 @@ class Vertex:
         self.data: Any = data
         self._index: int = index
 
-    @property
-    def index(self):
+    def get_index(self) -> int:
         """
         Indice del vertice.
         """
@@ -65,11 +66,33 @@ class Graph:
             root = union_find_data.find_set(vertex.data)
             if root not in connected_components:
                 connected_components[root] = []
-            connected_components[root].append(vertex.index)
+            connected_components[root].append(vertex.get_index())
         return list(connected_components.values())
 
+    def get_vertices_size(self) -> int:
+        """
+        Ritorna il numero di vertici.
+        """
+        return len(self._vertices)
+
+    def get_connections_size(self) -> int:
+        """
+        Ritorna il numero di archi.
+        """
+        return len(self._connections)
+
+    def get_connection_coverage(self) -> float:
+        """
+        Ritorna la percentuale di archi presenti rispetto
+        al loro numero massimo.
+        """
+        max_connections = self.get_vertices_size() * (self.get_vertices_size() - 1) / 2
+        return self.get_connections_size() / max_connections
+
     @classmethod
-    def random_generate(cls: Type[Self], n_vertices: int, n_edges: int = None) -> Self:
+    def random_generate(
+        cls: Type[Self], n_vertices: int, n_connections: int = None
+    ) -> Self:
         """
         Genera un grafo partendo dal numero di vertici e, opzionalmente,
         dal numero di archi. Gli archi vengono impostati casualmente.
@@ -79,28 +102,27 @@ class Graph:
         """
         graph = cls(n_vertices)
         max_edges = n_vertices * (n_vertices - 1) / 2
-        if n_edges is None:
+        if n_connections is None:
             n_edges = random.randint(1, max_edges)
-        n_edges = max(max_edges, n_edges)
-        samples = random.sample(
-            [[j, i] for i in range(n_vertices) for j in range(i)], int(n_edges)
-        )
-        for sample in samples:
+        n_connections = max(max_edges, n_connections)
+        for sample in np.random.default_rng().choice(
+            np.fromiter(combinations(range(n_vertices), 2), tuple), int(n_connections)
+        ):
             graph.add_connection(*sample)
         return graph
 
     @classmethod
     def random_generate_with_coverage(
-        cls: Type[Self], n_vertices: int, edges_coverage: float
+        cls: Type[Self], n_vertices: int, connections_coverage: float
     ) -> Self:
         """
         Genera un grafo utilizzando la funzione generate_random_graph,
-        con il parametro obbligatorio edges_coverage che ammette valori
+        con il parametro obbligatorio connections_coverage che ammette valori
         tra 0 e 1 che stabilisce il numero di archi (0 -> nessun arco,
         1 -> tutti i nodi sono collegati tra loro)
         """
-        edges_coverage = max(min(edges_coverage, 1), 0)
+        connections_coverage = max(min(connections_coverage, 1), 0)
 
         return cls.random_generate(
-            n_vertices, n_vertices * (n_vertices - 1) / 2 * edges_coverage
+            n_vertices, int(n_vertices * (n_vertices - 1) / 2 * connections_coverage)
         )

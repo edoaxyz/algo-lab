@@ -45,12 +45,11 @@ class List:
         Restituisce un iteratore della lista.
         """
         node = self.first
-        while node.next is not None:
+        while node is not None:
             yield node
             node = node.next
 
-    @property
-    def size(self) -> int:
+    def get_size(self) -> int:
         """
         Dimensione della lista.
         """
@@ -90,8 +89,9 @@ class HeuristicDisjointSets(ListDisjointSets):
     """
 
     def union(self, node_1: ListNode, node_2: ListNode) -> ListNode:
-        if node_1.list.size > node_2.list.size:
-            node_1.list.merge(node_2.list)
+        list_1, list_2 = node_1.list, node_2.list
+        if list_1.get_size() > list_2.get_size():
+            list_1.merge(list_2)
             return node_1
-        node_2.list.merge(node_1.list)
+        list_1.merge(list_2)
         return node_2
