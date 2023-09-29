@@ -1,0 +1,15 @@
+\section{Introduzione al problema}
+
+Le strutture dati per insiemi disgiunti vengono utilizzate in algoritmi
+nei quali sia necessario raggruppare diversi elementi sotto un unico rappresentante;
+definito $\mathcal{S}$ l'insieme contenente tutti gli insiemi disgiunti,
+possiamo descriverne tre operazioni fondamentali:
+
+
+\begin{itemize}
+    \item \textsc{Make-Set($x$)}: aggiunge a $\mathcal{S}$ un nuovo insieme
+          $\mathcal{S}_i = \{x\}$ ($x$ non deve esistere all'interno di alcun altro insieme,
+          altrimenti non sarebbero disgiunti)
+    \item \textsc{Find-Set($x$)}: individua l'elemento rappresentante dell'insieme nel quale $x$ è contenuto
+    \item \textsc{Union($x$, $y$)}: dati $x \in \mathcal{S}_x$ e $y \in \mathcal{S}_y$  
+\end{itemize}

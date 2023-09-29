@@ -1,0 +1,34 @@
+\documentclass[titlepage]{article}
+\usepackage{graphicx}
+\usepackage{titlesec}
+
+\newcommand{\hruleafter}[1]{#1\hrule}
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{\hruleafter}
+
+
+
+\title{{\small\centerline {Relazione di}} Laboratorio di Algoritmi e Strutture Dati}
+\author{Edoardo Grassi}
+\date{Settembre 2023}
+
+
+\begin{document}
+
+\maketitle
+
+\section*{Premessa}
+Questa relazione fa parte di un progetto per il corso di Laboratorio
+di Algoritmi e Strutture ed è composto da due esercizi:
+\begin{enumerate}
+    \item Confronto tra diverse strutture dati per insiemi disgiunti nell'ambito della ricerca di componenti connesse in grafi non diretti
+    \item Confronto tra \textit{insertion sort} e \textit{merge sort}
+\end{enumerate}
+
+In questa relazione viene analizzato e discusso solo il primo esercizio, 
+la cui implementazione è stata scritta in codice \textit{Python}.
+
+\include{parts/introduction}
+
+
+
+\end{document}
