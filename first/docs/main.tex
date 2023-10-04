@@ -1,11 +1,16 @@
 \documentclass[titlepage]{article}
 \usepackage{graphicx}
 \usepackage{titlesec}
+\usepackage[noend]{algorithmic}
+\usepackage{amsmath}
+\usepackage{biblatex}
+\usepackage[italian]{babel}
 
 \newcommand{\hruleafter}[1]{#1\hrule}
 \titleformat{\section}{\large\bfseries}{\thesection}{1em}{\hruleafter}
-
-
+\algsetup{linenodelimiter=.}
+\setlength\parindent{0pt}
+\addbibresource{main.bib}
 
 \title{{\small\centerline {Relazione di}} Laboratorio di Algoritmi e Strutture Dati}
 \author{Edoardo Grassi}
@@ -15,6 +20,8 @@
 \begin{document}
 
 \maketitle
+
+\tableofcontents
 
 \section*{Premessa}
 Questa relazione fa parte di un progetto per il corso di Laboratorio
@@ -28,7 +35,7 @@ In questa relazione viene analizzato e discusso solo il primo esercizio,
 la cui implementazione è stata scritta in codice \textit{Python}.
 
 \include{parts/introduction}
-
+\include{parts/code_doc}
 
 
 \end{document}

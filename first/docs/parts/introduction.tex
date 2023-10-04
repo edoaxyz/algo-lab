@@ -1,15 +1,221 @@
 \section{Introduzione al problema}
 
 Le strutture dati per insiemi disgiunti vengono utilizzate in algoritmi
-nei quali sia necessario raggruppare diversi elementi sotto un unico rappresentante;
+dove sia necessario raggruppare diversi elementi sotto un unico rappresentante;
 definito $\mathcal{S}$ l'insieme contenente tutti gli insiemi disgiunti,
-possiamo descriverne tre operazioni fondamentali:
-
+possiamo definire tre operazioni fondamentali su di esso:
 
 \begin{itemize}
     \item \textsc{Make-Set($x$)}: aggiunge a $\mathcal{S}$ un nuovo insieme
           $\mathcal{S}_i = \{x\}$ ($x$ non deve esistere all'interno di alcun altro insieme,
           altrimenti non sarebbero disgiunti)
     \item \textsc{Find-Set($x$)}: individua l'elemento rappresentante dell'insieme nel quale $x$ è contenuto
-    \item \textsc{Union($x$, $y$)}: dati $x \in \mathcal{S}_x$ e $y \in \mathcal{S}_y$  
+    \item \textsc{Union($x$, $y$)}: dati $x \in \mathcal{S}_x$ e $y \in \mathcal{S}_y$
+          ($x \ne y$ per quanto detto prima) $\mathcal{S} = (\mathcal{S} - \mathcal{S}_x - \mathcal{S}_y) \cup \mathcal{S}_\cup$
+          dove $\mathcal{S}_\cup = \mathcal{S}_x \cup \mathcal{S}_y$ il cui rappresentante è
+          dato da uno degli elementi in $\mathcal{S}_x$ o $\mathcal{S}_y$
 \end{itemize}
+
+\subsection{Ricerca di componenti connesse in grafi}
+
+Un possibile utilizzo di queste strutture dati è nella ricerca di componenti
+connesse in un \textbf{grafo non diretto} (o non orientato), ovvero quando i relativi
+archi non hanno direzione e pertanto collegano due nodi bidirezionalmente,
+e questo verrà utilizzato per confrontare diverse implementazioni della
+struttura dati.\newline
+
+Dato $G(V,E)$ un grafo non diretto, con $V$ insieme dei nodi del grafo e $E$
+l'insieme degli archi, l'algoritmo è il seguente:
+
+\begin{algorithmic}[1]
+    \FOR{$v \in G.V$} \label{alg:firstfor}
+    \STATE \textsc{Make-Set($v$)}
+    \ENDFOR
+    \FOR{$(u,v) \in G.E$} \label{alg:secondfor}
+    \IF{\textsc{Find-Set($u$)} $\ne$ \textsc{Find-Set($v$)}}
+    \STATE \textsc{Union($u$, $v$)}
+    \ENDIF
+    \ENDFOR
+\end{algorithmic}
+
+\hfill
+
+\fbox{\parbox{\textwidth}{
+        \textbf{Nota sulla complessità computazionale}\newline
+        Essendo il grafo $G(V, E)$ non diretto si ha che
+        \begin{equation} \label{maxedges}
+            \max(|E|) = \frac{n(n-1)}{2} = \Theta(n^2) \text{ con } n = |V|
+        \end{equation}
+        dunque il massimo numero di archi è minore rispetto al suo equivalente
+        per un grafo diretto.
+    }
+}
+
+\subsection{Implementazioni della struttura dati}
+Come riportato precedentemente, esistono varie implementazioni delle strutture
+dati per insiemi disgiunti che permettono di avere variazioni sui costi di complessità
+computazionale.
+
+\subsubsection{Liste concatenate}
+Questa implementazione consiste nel rappresentare gli insiemi disgiunti tramite liste
+concatenate. Ogni lista ha due puntatori, uno all'elemento iniziale della lista e uno
+all'elemento finale, permettendo di ottenere in tempo costante il rappresentante di un
+insieme, e di aggiungere elementi ad esso sempre in tempo costante. Ogni elemento della
+lista contiene, oltre ai dati associati, anche un puntatore al suo rappresentante, così da
+ottenere in tempo costante il rappresentante di qualsiasi elemento, e un puntatore al
+successivo elemento della lista, come in qualsiasi lista concatenata.\newline
+
+I costi computazionali delle operazioni base nei casi peggiori sono i seguenti:
+\begin{itemize}
+    \item \textsc{Make-Set($x$)} $\rightarrow O(1)$: dato che il costo di creazione di una nuova lista vuota è costante,
+          e per quanto detto nel paragrafo precedente anche l'inserimento ha costo costante;
+    \item \textsc{Find-Set($x$)} $\rightarrow O(1)$: per via del puntatore al rappresentante già presente all'interno
+          di qualsiasi elemento;
+    \item \textsc{Union($x$, $y$)} $\rightarrow O(n)$ con $n$ numero di elementi totali nella struttura dati: infatti,
+          supponendo di concatenare tutti gli elementi della lista contenente $y$ alla lista contenente $x$, abbiamo il caso
+          peggiore quando la lista di $x$ contiene solo $x$ stesso, e la lista di $y$ contiene i rimanenti $n-1$ elementi;
+          dato che l'unione prevede di cambiare il puntatore al rappresentante per ogni elemento inserito nella lista finale,
+          questa operazione ha tempo lineare, giustificando il risultato.
+\end{itemize}
+
+Il costo computazionale nel caso peggiore tiene conto del fatto che per $n$ elementi inseriti
+all'interno della struttura dati potranno essere eseguite massimo $n-1$ \textsc{Union} il cui
+numero di operazioni interne tenderà man mano verso $n-1$, quindi si considera il costo pari a:
+
+\begin{equation}
+    \Theta(n^2) \footnote{\fullcite{linkedList}} \label{LLCost}
+\end{equation}
+
+Considerando il problema della ricerca di componenti connesse su un grafo non diretto $G(V, E)$,
+questo è composto da un ciclo \textit{for} alla riga \ref{alg:firstfor} che esegue $|V|$ 
+operazioni di \textsc{Make-Set}, quindi crea $|V|$ elementi. Considerando \eqref{LLCost}, 
+il costo totale è dato da:
+
+\begin{equation}
+    \Theta(v^2) 
+\end{equation}
+
+con $v = |V|$. Se considero il caso con numero massimo di archi possibile \eqref{maxedges}, il
+risultato non varia.
+
+\subsubsection{Liste concatenate con euristica dell'unione pesata}
+Questa implementazione riprende quella delle normali liste concatenate e cerca
+di ridurre il costo dell'operazione di \textsc{Union} conservando nelle liste
+un parametro che indica il numero di elementi contenuti in esse e questo viene
+usato per unire la lista più corta a quella più lunga, riducendo il numero
+di operazioni. Inoltre, la gestione di un contatore di elementi all'interno di
+ogni lista ha costo costante, quindi i costi per le rimanenti operazioni
+continuano ad essere i medesimi per le liste concatenate.\newline
+
+In generale, data una sequenza di $m$ operazioni di \textsc{Make-Set}, \textsc{Find-Set}
+and \textsc{Union}, $n$ delle quali sono operazioni di \textsc{Make-Set} (i.e., $n$
+è il numero di elementi totali all'interno della struttura dati), il costo computazionale
+è dato da:
+
+\begin{equation}
+    O(m+n\log_2n) \footnote{\fullcite{weightedUnionHeuristic}} \label{WUHCost}
+\end{equation}
+
+Analizzando il costo della struttura dati nell'algoritmo di ricerca di componenti connessi
+su $G(V,E)$ grafo non diretto, si osserva che: $n$, il numero di \textsc{Make-Set} è dato
+dal numero di iterazioni del ciclo \textit{for} alla riga \ref{alg:firstfor}; $m$ è invece
+dato dalla somma di $n$ con il numero di \textsc{Find-Set} e \textsc{Union} del ciclo
+\textit{for} alla riga \ref{alg:secondfor}, moltiplicate per il numero di iterazioni del
+ciclo stesso:
+
+\begin{equation}
+    \begin{aligned}
+        n & = |V|                                 \\
+        m & = n + |E| \cdot (2 + 1) = |V| + 3 |E|
+    \end{aligned}
+\end{equation}
+
+Quindi, per \eqref{WUHCost}, e indicando con $v = |V|$ e $e = |E|$, il costo complessivo è dato da:
+
+\begin{equation}
+    \begin{aligned}
+        O(m+n\log_2n) & = O((v + 3 e) + v\log_2v) \\
+                      & = O(v + 3 e + v\log_2v)   \\
+                      & = O(3e+ v\log_2v)         \\
+                      & = O(e + v\log_2v)
+    \end{aligned}
+\end{equation}
+
+Considerando il caso peggiore in cui il numero di archi è massimo, per \eqref{maxedges} si ha:
+
+\begin{equation}
+    \begin{aligned}
+        e             & = \Theta(v^2)               \\
+        O(e+v\log_2v) & = O(v^2+ v\log_2v) = O(v^2)
+    \end{aligned}
+\end{equation}
+
+quindi si ha un costo quadratico.
+\newpage
+
+\subsubsection{Foreste di insiemi disgiunti con compressione dei cammini}
+Questa implementazione prevede di rappresentare ogni elemento di ogni insieme disgiunto
+come nodo di un albero, quindi è composto dal dato che contiene e da un puntatore al nodo
+padre. Ogni insieme disgiunto è quindi rappresentato da un albero la cui radice diventa
+automaticamente il rappresentante dell'insieme. Nella versione base, ovvero senza compressione
+dei cammini, i costi delle operazioni base sono i seguenti:
+
+\begin{itemize}
+    \item \textsc{Make-Set($x$)} $\rightarrow O(1)$: prevede di creare un nuovo nodo senza padre;
+    \item \textsc{Find-Set($x$)} $\rightarrow O(h_x)$ con $h_x$ altezza dell'albero in cui è contenuto $x$:
+          questo perchè per individuare il rappresentante del nodo è necessario risalire tutto l'albero
+          fino a giungere alla radice;
+    \item \textsc{Union($x$, $y$)} $\rightarrow O(h_y)$ supponendo di porre $x$ come padre del rappresentante
+          di $y$: infatti, per unire due alberi (o i due insiemi) basta porre come padre di uno dei due rappresentanti
+          l'altro elemento, e automaticamente il rappresentante degli elementi dell'albero unito diviene il
+          rappresentante dell'albero espanso.
+\end{itemize}
+
+La compressione del cammino cerca di attenuare i tempi dell'operazione di \textsc{Find-Set}
+(che viene utilizzata anche in \textsc{Union} per individuare il rappresentante sul quale
+cambiare padre), andando a ridurre i cammini dai singoli nodi verso la radice dell'albero.
+Ciò viene fatto nell'operazione di \textsc{Find-Set} che diventa una funzione ricorsiva: man
+mano che si risale l'albero i nodi attraversati vengono salvati e una volta raggiunta la radice
+i padri dei nodi salvati vengono aggiornati con la radice individuata.\newline
+
+Con la compressione dei cammini, la struttura dati ha un costo computazionale pari a:
+\begin{equation}
+    \Theta(n + f \cdot (1 + \log_{2+\frac{f}{n}}n) \footnote{\fullcite{forestPathCompression}} \label{FPCCost}
+\end{equation}
+
+con $f$ il numero di operazioni \textsc{Find-Set} e $n$ il numero di operazioni \textsc{Union}.
+
+Nel caso della ricerca di componenti connesse $n$ è dato dal numero delle iterazioni del
+ciclo \textit{for} alla riga \ref{alg:firstfor}, mentre $f$ dipende dal numero di iterazioni
+del ciclo \textit{for} alla riga \ref{alg:secondfor}, e considerando anche la \textsc{Find-Set}
+implicita in \textsc{Union}, abbiamo:
+
+\begin{equation}
+    \begin{aligned}
+        n & = |V|   \\
+        f & = 3 |E|
+    \end{aligned}
+\end{equation}
+
+Quindi, per \eqref{FPCCost}, il costo totale è dato da:
+
+\begin{equation}
+    \begin{aligned}
+        \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + 3e ( 1+\log_{2+\frac{3e}{v}}v)) \\
+                                                   & = \Theta(v + 3e + 3e\log_{2+\frac{3e}{v}}v) \\
+                                                   & = O(v + 3e\log_{2+\frac{3e}{v}}v)
+    \end{aligned}
+\end{equation}
+
+con $v = |V|$ e $e = |E|$.
+
+Nel caso peggiore, con il numero massimo di archi, si ha:
+\begin{equation}
+    \begin{aligned}
+        e                               & = \Theta(v^2)                         \\
+        O(v + 3e\log_{2+\frac{3e}{v}}v) & = O(v + 3v^2\log_{2+\frac{3v^2}{v}}v) \\
+                                        & = O(v + v^2\log_2{2+3v}v)             \\
+                                        & = O(v^2\log_{2+3v}v)
+    \end{aligned}
+\end{equation}
+

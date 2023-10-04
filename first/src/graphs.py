@@ -56,10 +56,10 @@ class Graph:
         for vertex in self._vertices:
             vertex.data = union_find_data.make_set(vertex)
         for conn in self._connections:
-            first_node, second_node = conn[0].data, conn[1].data
-            if union_find_data.find_set(first_node) != union_find_data.find_set(
-                second_node
-            ):
+            first_node, second_node = union_find_data.find_set(
+                conn[0].data
+            ), union_find_data.find_set(conn[1].data)
+            if first_node != second_node:
                 union_find_data.union(first_node, second_node)
         connected_components = {}
         for vertex in self._vertices:
