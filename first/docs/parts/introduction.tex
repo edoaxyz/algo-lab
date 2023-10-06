@@ -27,18 +27,20 @@ struttura dati.\newline
 Dato $G(V,E)$ un grafo non diretto, con $V$ insieme dei nodi del grafo e $E$
 l'insieme degli archi, l'algoritmo è il seguente:
 
-\begin{algorithmic}[1]
-    \FOR{$v \in G.V$} \label{alg:firstfor}
-    \STATE \textsc{Make-Set($v$)}
-    \ENDFOR
-    \FOR{$(u,v) \in G.E$} \label{alg:secondfor}
-    \IF{\textsc{Find-Set($u$)} $\ne$ \textsc{Find-Set($v$)}}
-    \STATE \textsc{Union($u$, $v$)}
-    \ENDIF
-    \ENDFOR
-\end{algorithmic}
+\begin{algorithm}
+    \caption{Ricerca di componenti connesse}\label{connectedComponentsAlg}
+    \begin{algorithmic}[1]
+        \FOR{$v \in G.V$} \label{alg:firstfor}
+        \STATE \textsc{Make-Set($v$)}
+        \ENDFOR
+        \FOR{$(u,v) \in G.E$} \label{alg:secondfor}
+        \IF{\textsc{Find-Set($u$)} $\ne$ \textsc{Find-Set($v$)}}
+        \STATE \textsc{Union($u$, $v$)}
+        \ENDIF
+        \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
 
-\hfill
 
 \fbox{\parbox{\textwidth}{
         \textbf{Nota sulla complessità computazionale}\newline
@@ -87,12 +89,12 @@ numero di operazioni interne tenderà man mano verso $n-1$, quindi si considera 
 \end{equation}
 
 Considerando il problema della ricerca di componenti connesse su un grafo non diretto $G(V, E)$,
-questo è composto da un ciclo \textit{for} alla riga \ref{alg:firstfor} che esegue $|V|$ 
-operazioni di \textsc{Make-Set}, quindi crea $|V|$ elementi. Considerando \eqref{LLCost}, 
+questo è composto da un ciclo \textit{for} alla riga \ref{alg:firstfor} che esegue $|V|$
+operazioni di \textsc{Make-Set}, quindi crea $|V|$ elementi. Considerando \eqref{LLCost},
 il costo totale è dato da:
 
 \begin{equation}
-    \Theta(v^2) 
+    \Theta(v^2) \label{WorstLLCost}
 \end{equation}
 
 con $v = |V|$. Se considero il caso con numero massimo di archi possibile \eqref{maxedges}, il
@@ -191,6 +193,7 @@ del ciclo \textit{for} alla riga \ref{alg:secondfor}, e considerando anche la \t
 implicita in \textsc{Union}, abbiamo:
 
 \begin{equation}
+    \label{FPCValues}
     \begin{aligned}
         n & = |V|   \\
         f & = 3 |E|
@@ -200,9 +203,10 @@ implicita in \textsc{Union}, abbiamo:
 Quindi, per \eqref{FPCCost}, il costo totale è dato da:
 
 \begin{equation}
+    \label{FPC2Cost}
     \begin{aligned}
         \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + 3e ( 1+\log_{2+\frac{3e}{v}}v)) \\
-                                                   & = \Theta(v + 3e + 3e\log_{2+\frac{3e}{v}}v) \\
+                                                   & = \Theta(v + 3e + 3e\log_{2+\frac{3e}{v}}v)  \\
                                                    & = O(v + 3e\log_{2+\frac{3e}{v}}v)
     \end{aligned}
 \end{equation}
@@ -211,6 +215,7 @@ con $v = |V|$ e $e = |E|$.
 
 Nel caso peggiore, con il numero massimo di archi, si ha:
 \begin{equation}
+    \label{WorstFPC2Cost}
     \begin{aligned}
         e                               & = \Theta(v^2)                         \\
         O(v + 3e\log_{2+\frac{3e}{v}}v) & = O(v + 3v^2\log_{2+\frac{3v^2}{v}}v) \\

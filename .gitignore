@@ -1,6 +1,6 @@
 __pycache__
 .vscode
-results.csv
+first/src/results.csv
 
 *.aux
 *.lof

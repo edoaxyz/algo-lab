@@ -13,8 +13,8 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 print("Generating graphs...")
 graphs = {
     (coverage, n_vertices): Graph.random_generate_with_coverage(n_vertices, coverage)
-    for coverage in [0.01, 0.5, 1]
-    for n_vertices in range(100, 1000, 100)
+    for coverage in [0.002, 0.5, 1]
+    for n_vertices in range(100, 1100, 100)
 }
 UF_IMPLEMENTATIONS = {
     "LC": ListDisjointSets,
@@ -26,14 +26,14 @@ ROUNDS = 3
 results = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
 
 print("Calculating times...")
-for round in range(ROUNDS):
-    print(f"Round {round + 1}...")
+for r in range(ROUNDS):
+    print(f"Round {r + 1}...")
     for uf_impl in UF_IMPLEMENTATIONS.values():
         for (cov, vert), graph in graphs.items():
             start = time.time()
             graph.get_connected_components(uf_impl)
             end = time.time()
-            results[cov][uf_impl][vert][round] = end - start
+            results[cov][uf_impl][vert][r] = end - start
 
 print("Calculating means...")
 for uf_impl in UF_IMPLEMENTATIONS.values():
@@ -62,15 +62,15 @@ with open("results.csv", "w", newline="", encoding="utf-8") as csvfile:
             cov,
             uf_label,
             verts,
-            round + 1,
-            results[cov][uf_impl][verts][round],
-            results[cov][uf_impl][verts]["mean"],
+            r + 1,
+            round(results[cov][uf_impl][verts][r], 3),
+            round(results[cov][uf_impl][verts]["mean"], 3),
         )
         for cov in results
         for uf_label, uf_impl in UF_IMPLEMENTATIONS.items()
         for verts in results[cov][uf_impl]
-        for round in results[cov][uf_impl][verts]
-        if round in range(ROUNDS)
+        for r in results[cov][uf_impl][verts]
+        if r in range(ROUNDS)
     )
 
 print("Showing results...")
@@ -81,7 +81,7 @@ for cov in results:
             [values["mean"] for values in results[cov][uf_impl].values()],
             label=label,
         )
-    plt.title(f"Copertura {cov*100:.0f}%")
+    plt.title(f"Copertura {cov*100:.1f}%")
     plt.legend(loc="best")
     plt.xlabel("Nodi")
     plt.ylabel("Tempo (s)")

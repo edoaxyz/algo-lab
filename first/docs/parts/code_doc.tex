@@ -1,3 +1,241 @@
 \section{Documentazione del codice}
-Il codice per testare e confrontare le varie implementazioni della struttura dati è
-contenuta nel modulo \texttt{disjoint\_sets}
+Il codice che contiene le varie implementazioni della struttura dati è
+contenuta nel modulo \texttt{disjoint\_sets}. Questo contiene tre sottomoduli: \linebreak
+\texttt{disjoint\_sets.base}, \texttt{disjoint\_sets.list} e \texttt{disjoint\_sets.tree}.
+Il codice utilizzato per rappresentare i grafi e l'operazione di ricerca di componenti
+connesse è contenuta nel modulo \texttt{graphs}, mentre il codice usato per il confronto
+è nel modulo principale (\texttt{\_\_main\_\_}).
+
+\begin{figure}[!h]
+      \centering
+      \includegraphics[height=4cm]{diagrams/Package}
+      \caption{Diagramma dei moduli utilizzati}
+\end{figure}
+
+
+\subsection{Il modulo \texttt{disjoint\_sets.base}}
+Questo modulo contiene le interfacce base per la gestione di
+strutture dati per insiemi disgiunti:
+
+\begin{enumerate}
+      \item \texttt{Node}: classe per indicare un generico elemento all'interno di un insieme
+            disgiunto; contiene un solo attributo \texttt{data} che viene utilizzato per salvare i
+            dati relativi all'elemento.
+      \item \texttt{DisjointSetsInterface}: interfaccia per le strutture dati che gestiscono
+            insiemi disgiunti, contiene i metodi:
+            \begin{enumerate}
+                  \item \texttt{find\_set(Node) $\rightarrow$ Node}: dato un oggetto \texttt{Node} restituisce il suo rappresentante
+                        di tipo \texttt{Node};
+                  \item \texttt{make\_set(Any) $\rightarrow$ Node}: data una istanza di un qualsiasi tipo ritorna un oggetto \texttt{Node}
+                        con \texttt{data} impostato al valore passato, creando un nuovo insieme disgiunto;
+                        \textbf{Nota}: nelle implementazioni contenute nel modulo \texttt{disjoint\_sets} si presuppone che gli elementi
+                        inseriti siano tutti diversi tra loro, condizione necessaria per avere insiemi disgiunti, quindi non è presente
+                        alcun controllo su tale requisito;
+                  \item \texttt{union(Node, Node) $\rightarrow$ Node}: dati 2 oggetti \texttt{Node} esegue l'unione tra i relativi insiemi
+                        disgiunti, restituendo il \texttt{Node} nel quale insieme sono stati aggiunti gli elementi dell'insieme
+                        dell'altro \texttt{Node} (i.e. restituisce l'oggetto \texttt{Node} il cui insieme non è stato distrutto).
+            \end{enumerate}
+\end{enumerate}
+
+\subsection{Il modulo \texttt{disjoint\_sets.list}}
+
+\begin{figure}[!b]
+      \centering
+      \includegraphics[width=\textwidth]{diagrams/DisjointSets}
+      \caption{Diagramma UML del modulo \texttt{disjoint\_sets}}
+\end{figure}
+
+Questo modulo contiene le implementazioni delle interfacce tramite liste concatenate con
+e senza euristica dell'unione pesata. Sono definite al suo interno le seguenti classi:
+
+\begin{enumerate}
+      \item \texttt{ListNode}: eredita \texttt{Node} aggiungendo gli attributi:
+            \begin{enumerate}
+                  \item \texttt{next $\rightarrow$ Node}: per indicare il successivo elemento (in una lista concatenata)
+                  \item \texttt{list $\rightarrow$ List}: anzichè usare un puntatore al rappresentante si usa un puntatore alla lista
+                        intera (questo non varia i costi computazionali);
+            \end{enumerate}
+            \newpage
+      \item \texttt{List}: è la struttura dati usata per gestire le liste concatenate e quindi gli insiemi;
+            viene inizializzata vuota ed è composta dagli attributi:
+            \begin{enumerate}
+                  \item \texttt{first $\rightarrow$ ListNode}: rappresenta il primo nodo della lista e quindi il rappresentante;
+                  \item \texttt{last $\rightarrow$ ListNode}: rappresenta l'ultimo nodo della lista, fondamentale per gli inserimenti
+                        in tempo costante;
+                  \item \texttt{\_size $\rightarrow$ int}: attributo privato che rappresenta la dimensione attuale della lista;
+            \end{enumerate}
+            e dai metodi:
+            \begin{enumerate}[resume]
+                  \item \texttt{add(ListNode)}: aggiunge alla lista un nodo, incrementando la dimensione della lista;
+                  \item \texttt{get\_size() $\rightarrow$ int}: restituisce la dimensione della lista (i.e. elementi
+                        contenuti nell'insieme disgiunto);
+                  \item \texttt{merge(List)}: inserisce tutti gli elementi di una certa lista nella lista corrente,
+                        aggiornando i puntatori verso essa;
+            \end{enumerate}
+      \item \texttt{ListDisjointSets}: implementazione dell'interfaccia \texttt{DisjointSets-\linebreak Interface} tramite liste concatenate
+            \textbf{senza} euristica dell'unione pesata, tra i metodi
+            implementati troviamo alcune particolarità: come detto nella classe \texttt{List} l'operazione di \texttt{find\_set}
+            sfrutta il puntatore alla lista per poi ottenere il primo elemento (rappresentante); l'operazione di \texttt{union}
+            va a richiamare in modo diretto il metodo \texttt{merge} della lista associata al primo nodo passato come argomento;
+      \item \texttt{HeuristicDisjointSets}: eredita \texttt{ListDisjointSets}, quindi implementa \texttt{DisjointSetsInterface}
+            per gestire gli insiemi disgiunti tramite liste concatenate \textbf{con} euristica dell'unione pesata: questo implica
+            che il metodo \texttt{union} controlli prima le dimensioni delle liste tramite il metodo \texttt{get\_size} e sulla base
+            dei esse unire la lista più corta a quella più lunga.
+\end{enumerate}
+
+\subsection{Il modulo \texttt{disjoint\_sets.tree}}
+Questo modulo contiene l'implementazione delle interfacce tramite foreste con compressione del cammino.
+A differenza del modulo precedente dove abbiamo \texttt{List} che rappresenta un insieme disgiunto,
+in questa implementazione non si ha una classe equivalente (e.g. \texttt{Tree}), e si riduce agli
+unici elementi degli alberi. Infatti le classi che lo compongono sono:
+
+\begin{enumerate}
+      \item \texttt{TreeNode}: identifica un nodo nell'albero e eredita \texttt{Node} aggiungendo l'attributo \texttt{parent} di tipo \texttt{TreeNode}
+            per individuare il padre del nodo; un nodo senza padre diventa automaticamente rappresentante di quell'albero/insieme;
+      \item \texttt{ForestDisjointSets}: implementazione dell'interfaccia \texttt{DisjointSets-\linebreak Interface} per la gestione
+            di insiemi disgiunti con foreste di nodi, con compressione dei cammini; tra le operazioni implementate la più degna di nota
+            è la \texttt{find\_set} che viene implementata in forma ricorsiva: il caso base si ha quando il nodo passato come argomento
+            non ha padre e quindi è il rappresentante, il caso induttivo richiama lo stesso metodo con il padre del nodo e nella fase di
+            post-ricorsione si imposta il padre di ogni nodo incontrato con il rappresentante dell'insieme.
+\end{enumerate}
+
+\subsection{Il modulo \texttt{graphs}}
+Questo modulo definisce le classi per la gestione dei grafi non diretti tramite indici, e fa grande uso delle strutture dati
+base messe a disposizione dal linguaggio \textit{Python}:
+
+\begin{figure}[!b]
+      \centering
+      \includegraphics[width=\textwidth]{diagrams/Graph}
+      \caption{Diagramma UML del modulo \texttt{graphs}}
+\end{figure}
+
+\begin{enumerate}
+      \item \texttt{Vertex}: identifica un vertice di un grafo; viene inizializzato con l'indice rispetto
+            alla lista di vertici contenuta in nell'oggetto \texttt{Graph} associato, e con il dato associato;
+            dato che \texttt{index} è privato, per accedere all'indice del vertice si utilizza il metodo
+            \texttt{get\_index() $\rightarrow$ int};
+      \item \texttt{Graph}: è la classe che identifica il grafo non diretto ed è composta dagli attributi:
+            \begin{enumerate}
+                  \item \texttt{\_vertices $\rightarrow$ list[Vertex]}: attributo privato che salva tutti i
+                        vertici del grafo tramite la struttura dati base \texttt{list}; all'istanziazione
+                        della classe questa lista viene inizializzata creando un numero di vertici indicato
+                        tra i parametri del costruttore;
+                  \item \texttt{\_connections $\rightarrow$ set[tuple[Vertex, Vertex]]}: attributo privato usato
+                        per salvare le connessioni tra nodi usando le strutture dati base \texttt{tuple} usata
+                        per combinare coppie di oggetti in un singolo oggetto e \texttt{set} per gestire un insieme
+                        di queste coppie, evitando eventuali duplicati con inserimenti in tempi costanti;
+            \end{enumerate}
+            e dai metodi:
+            \begin{enumerate}[resume]
+                  \item \texttt{add\_connection(int, int)}: aggiunge una nuova connessione non diretta tra i vertici
+                        usando i relativi indici; gli indici passati vengo riordinati in modo che la sorgente abbia
+                        sempre indice minore alla destinazione (anche se in grafi non diretti i termini \textit{sorgente}
+                        e \textit{destinazione} non hanno differenza) per ridurre il numero di connessioni salvate nel grafo;
+                  \item \texttt{get\_connected\_components(Type[DisjointSetsInterface])\linebreak $\rightarrow$ list[list[int]]}:
+                        è il metodo che svolge l'algoritmo \ref{connectedComponentsAlg} utilizzando l'implementazione degli
+                        insiemi disgiunti passata come argomento (\texttt{Type[DisjointSetsInterface]} significa che accetta come
+                        argomento una \textbf{classe} che implementa \texttt{DisjointSetsInterface}), quindi istanzia la classe
+                        passata e la usa nell'algoritmo; oltre a elaborare l'algoritmo il metodo deve ritornarne il risultato
+                        della ricerca dato da liste di componenti connesse, ovvero altre liste di indici che rappresentano i vertici,
+                        e per fare ciò si fa riferimento al seguente pseudocodice:
+
+                        \begin{algorithm}
+                              \caption{Conversione da insiemi disgiunti a liste di liste di vertici}\label{conversion}
+                              \begin{algorithmic}[1]
+                                    \ENSURE $G(V,E)$ grafo non diretto
+                                    \STATE $D\leftarrow$ hash table vuota
+                                    \FOR{$v \in G.V$}
+                                    \STATE $rep \leftarrow \textsc{Find-Set($v$)}$
+                                    \IF{$rep$ \textbf{non} è tra le chiavi di D}
+                                    \STATE $D[rep]\leftarrow$ lista vuota
+                                    \ENDIF
+                                    \STATE aggiungi $v$ a $D[rep]$
+                                    \ENDFOR
+                                    \RETURN tutti i valori di $D$
+                              \end{algorithmic}
+                        \end{algorithm}
+
+                        Dobbiamo comunque fare attenzione all'eventuale variazione di costo dell'algoritmo complessivo, infatti abbiamo
+                        una variazione del numero di \textsc{Find-Set} eseguite, quindi dato un grafo non diretto $G(V,E)$, si distinguono le implementazioni:
+                        \begin{itemize}
+                              \item Liste concatenate (\texttt{ListDisjointSets}): in questo caso la \textsc{Find-Set} ha un costo costante
+                                    e viene eseguita $|V| = v$ volte, quindi riprendendo \eqref{LLCost} e considerando $n = v$:
+                                    \begin{equation}
+                                          \Theta(n^2 + v) = \Theta(v^2 + v) = O(v^2)
+                                    \end{equation}
+                                    il risultato è il medesimo anche per \eqref{WorstLLCost}, ovvero quando si ha il numero massimo di archi,
+                                    quindi non si ha variazione dei costi;
+                              \item Liste concatenate con euristica dell'unione pesata\linebreak (\texttt{HeuristicDisjointSets}): anche in
+                                    questo caso il costo della \textsc{Find-Set} è costante, quindi vale quanto detto nel punto precedente
+                                    e il costo non varia;
+                              \item Foreste di insiemi disgiunti con compressione dei cammini\linebreak (\texttt{ForestDisjointSets}):
+                                    in questo caso il costo della \textsc{Find-Set} non è costante e può richiedere nel caso peggiore
+                                    $O(v)$ con $v = |V|$, quindi considerando \eqref{FPCCost}, \eqref{FPCValues} e che il numero di
+                                    \textsc{Find-Set} aumenta di $v$ volte:
+                                    \begin{equation}
+                                          \label{NewFCCCost}
+                                          \begin{aligned}
+                                                n                                          & = v                                                         \\
+                                                f                                          & = 3 e + v                                                   \\
+                                                \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + (3e+v) \cdot ( 1+\log_{2+\frac{3e+v}{v}}v))    \\
+                                                                                           & = O(3e\log_{2+\frac{3e+v}{v}}v + v\log_{2+\frac{3e+v}{v}}v) \\
+                                          \end{aligned}
+                                    \end{equation}
+                                    con un leggera variazione rispetto a \eqref{FPC2Cost}. Nel caso peggiore con massimo numero di archi:
+                                    \begin{equation}
+                                          \begin{aligned}
+                                                e                  & = \Theta(v^2)                                                          \\
+                                                \eqref{NewFCCCost} & = O(v^2\log_{2+\frac{3v^2+v}{v}}v+ v\log_{2+\frac{3v^2+v}{v}}v)        \\
+                                                                   & = O(v^2\log_{3v+3}v+ v\log_{3v+3}v)                                    \\
+                                                                   & = O(v^2\log_{3v+3}v) \simeq O(v^2\log_{3v+3}v) = \eqref{WorstFPC2Cost}
+                                          \end{aligned}
+                                    \end{equation}
+                                    quindi nel caso peggiore il costo non varia;
+                        \end{itemize}
+                        in generale consideriamo questa operazione come ininfluente nel calcolo dei costi computazionali;
+                  \item \texttt{get\_vertices\_size() $\rightarrow$ int}: ritorna il numero di vertici contenuti nel grafo;
+                  \item \texttt{get\_connections\_size() $\rightarrow$ int}: ritorna il numero di singole connessioni contenute nel grafo:
+                        se ho una connessione $A \leftrightarrow B$ questa viene contata una sola volta e non come due connessioni distinte
+                        $A \rightarrow B$ e $B \rightarrow A$;
+                  \item \texttt{get\_connection\_coverage() $\rightarrow$ float}: ritorna la percentuale (compresa tra $[0;1]$) delle connessioni
+                        presenti rispetto al numero massimo;
+                  \item \texttt{random\_generate(int, \textit{int}) $\rightarrow$ Graph}: metodo statico che permette di generare un'istanza
+                        di \texttt{Graph} aggiungendo vertici e connnessioni in maniera casuale; il primo argomento indica il numero di vertici, il secondo
+                        il numero di connessioni e quando non è specificato è pari ad un numero casuale compreso tra 0 e il numero massimo di
+                        archi possibile secondo \eqref{maxedges}; le connessioni vengono scelte casualmente da un pool contenente tutte le possibili
+                        connessioni valide utilizzando le librerie \texttt{numpy} e \texttt{itertools};
+                  \item \texttt{random\_generate\_with\_coverage(int, float) $\rightarrow$ Graph}: metodo statico che genera un'istanza
+                        di \texttt{Graph} richiamando \texttt{random\_generate}; il primo parametro mantiene lo stesso scopo, il secondo, non più
+                        opzionale, rappresenta la percentuale di connessioni (compresa tra $[0;1]$) che vogliamo nel grafo rispetto a \eqref{maxedges}.
+            \end{enumerate}
+\end{enumerate}
+
+\subsection{Il modulo \texttt{\_\_main\_\_}}
+Questo modulo rappresenta il file principale del progetto e va ad eseguire i test su diversi grafi utilizzando
+le diverse implementazioni per gli insiemi disgiunti.\newline
+
+In prima istanza vengono generati i grafi usati per i test: questi hanno un numero variabile di vertici che vanno da 100 a 1000 in multipli di 100, con 100
+e 1000 inclusi, e un numero variabile di connessioni tali per cui la loro percentuale rispetto al numero massimo (che d'ora in poi chiameremo
+\textit{copertura}) assume uno dei seguenti valori: \texttt{0.002}, \texttt{0.5}, \texttt{1}; il valore \texttt{0.002} corrisponde ad una copertura
+dello 0.2\% garantendo di non avere tutti i vertici in unico insieme disgiunto alla fine della ricerca, infatti per garantire ciò è necessario che il numero
+di connessioni sia sempre minore al numero di vertici, e considerando \eqref{maxedges}:
+\begin{equation}
+      \begin{aligned}
+            0.002 \cdot \frac{n(n-1)}{2} & \le n \quad \forall n \in \{100, 200, \ldots, 1000\} \\
+            n(n-1001)                    & \le 0                                                \\
+            0                            & \le n\le 1001
+      \end{aligned}
+\end{equation}
+che risulta soddisfatta per i casi di nodi presi in considerazione. In totale si hanno $3 \cdot 10 = 20$ grafi da testare con le 3 implementazioni
+degli insiemi disgiunti.\newline
+
+I test vengono quindi fatti passando al metodo \texttt{get\_connected\_components} di ognuno dei grafi le classi che implementano
+l'interfaccia \texttt{DisjointSetsInterface} volta per volta e registrando i tempi attraverso la libreria \texttt{time}, sottraendo
+il valore finale di \texttt{time.time()} a quello iniziale. Questo processo viene ripetuto per tre volte e alla fine viene calcolata
+la media dei tempi impiegati.\newline
+
+Dopodichè i tempi, arrotondati a 3 cifre significative, vengono salvati su un file \texttt{.csv} insieme ai valori di riferimento dei grafi e tramite la libreria \texttt{matplotlib}
+vengono visualizzati i grafici dei tempi medi, uno per ogni valore di copertura, dove sull'asse \textit{x} abbiamo i valori dei numeri di nodi mentre
+sull'asse \textit{y} i valori dei tempi.
+
+

@@ -1,9 +1,12 @@
 \documentclass[titlepage]{article}
 \usepackage{graphicx}
 \usepackage{titlesec}
+\usepackage{algorithm}
 \usepackage[noend]{algorithmic}
 \usepackage{amsmath}
 \usepackage{biblatex}
+\usepackage{graphicx}
+\usepackage{enumitem}
 \usepackage[italian]{babel}
 
 \newcommand{\hruleafter}[1]{#1\hrule}
@@ -11,6 +14,9 @@
 \algsetup{linenodelimiter=.}
 \setlength\parindent{0pt}
 \addbibresource{main.bib}
+\graphicspath{ {./assets/} }
+\makeatletter\renewcommand{\ALG@name}{Algoritmo}
+
 
 \title{{\small\centerline {Relazione di}} Laboratorio di Algoritmi e Strutture Dati}
 \author{Edoardo Grassi}
@@ -36,6 +42,7 @@ la cui implementazione è stata scritta in codice \textit{Python}.
 
 \include{parts/introduction}
 \include{parts/code_doc}
+\include{parts/test_results}
 
 
 \end{document}
