@@ -1,6 +1,6 @@
 \section{Documentazione del codice}
 Il codice che contiene le varie implementazioni della struttura dati è
-contenuta nel modulo \texttt{disjoint\_sets}. Questo contiene tre sottomoduli: \linebreak
+contenuta nel modulo \texttt{disjoint\_sets}. Questo contiene tre sottomoduli:
 \texttt{disjoint\_sets.base}, \texttt{disjoint\_sets.list} e \texttt{disjoint\_sets.tree}.
 Il codice utilizzato per rappresentare i grafi e l'operazione di ricerca di componenti
 connesse è contenuta nel modulo \texttt{graphs}, mentre il codice usato per il confronto
@@ -72,12 +72,12 @@ e senza euristica dell'unione pesata. Sono definite al suo interno le seguenti c
                   \item \texttt{merge(List)}: inserisce tutti gli elementi di una certa lista nella lista corrente,
                         aggiornando i puntatori verso essa;
             \end{enumerate}
-      \item \texttt{ListDisjointSets}: implementazione dell'interfaccia \texttt{DisjointSets-\linebreak Interface} tramite liste concatenate
+      \item \texttt{ListDisjointSets}: implementazione dell'interfaccia \texttt{DisjointSetsInterface} tramite liste concatenate
             \textbf{senza} euristica dell'unione pesata, tra i metodi
             implementati troviamo alcune particolarità: come detto nella classe \texttt{List} l'operazione di \texttt{find\_set}
             sfrutta il puntatore alla lista per poi ottenere il primo elemento (rappresentante); l'operazione di \texttt{union}
-            va a richiamare in modo diretto il metodo \texttt{merge} della lista associata al primo nodo passato come argomento;
-      \item \texttt{HeuristicDisjointSets}: eredita \texttt{ListDisjointSets}, quindi implementa \texttt{DisjointSetsInterface}
+            va a richiamare in modo diretto il metodo \texttt{merge} della lista associata al primo nodo passato come argomento;\newpage
+      \item \texttt{HeuristicDisjointSets}: eredita \texttt{ListDisjointSets}, quindi implementa\linebreak \texttt{DisjointSetsInterface}
             per gestire gli insiemi disgiunti tramite liste concatenate \textbf{con} euristica dell'unione pesata: questo implica
             che il metodo \texttt{union} controlli prima le dimensioni delle liste tramite il metodo \texttt{get\_size} e sulla base
             dei esse unire la lista più corta a quella più lunga.
@@ -92,7 +92,7 @@ unici elementi degli alberi. Infatti le classi che lo compongono sono:
 \begin{enumerate}
       \item \texttt{TreeNode}: identifica un nodo nell'albero e eredita \texttt{Node} aggiungendo l'attributo \texttt{parent} di tipo \texttt{TreeNode}
             per individuare il padre del nodo; un nodo senza padre diventa automaticamente rappresentante di quell'albero/insieme;
-      \item \texttt{ForestDisjointSets}: implementazione dell'interfaccia \texttt{DisjointSets-\linebreak Interface} per la gestione
+      \item \texttt{ForestDisjointSets}: implementazione dell'interfaccia \texttt{DisjointSetsInterface} per la gestione
             di insiemi disgiunti con foreste di nodi, con compressione dei cammini; tra le operazioni implementate la più degna di nota
             è la \texttt{find\_set} che viene implementata in forma ricorsiva: il caso base si ha quando il nodo passato come argomento
             non ha padre e quindi è il rappresentante, il caso induttivo richiama lo stesso metodo con il padre del nodo e nella fase di
@@ -113,7 +113,7 @@ base messe a disposizione dal linguaggio \textit{Python}:
       \item \texttt{Vertex}: identifica un vertice di un grafo; viene inizializzato con l'indice rispetto
             alla lista di vertici contenuta in nell'oggetto \texttt{Graph} associato, e con il dato associato;
             dato che \texttt{index} è privato, per accedere all'indice del vertice si utilizza il metodo
-            \texttt{get\_index() $\rightarrow$ int};
+            \texttt{get\_index() $\rightarrow$ int};\newpage
       \item \texttt{Graph}: è la classe che identifica il grafo non diretto ed è composta dagli attributi:
             \begin{enumerate}
                   \item \texttt{\_vertices $\rightarrow$ list[Vertex]}: attributo privato che salva tutti i
@@ -230,7 +230,7 @@ Questo modulo rappresenta il file principale del progetto e va ad eseguire i tes
 le diverse implementazioni per gli insiemi disgiunti.\newline
 
 In prima istanza vengono generati i grafi usati per i test sulla base dei valori di copertura assegnati: per la copertura lineare \texttt{lin}
-vengono assegnati i valori \texttt{0.75} e \texttt{1} per evitare eventuali outlier senza dover aumentare spropositamente il numero dei vertici
+vengono assegnati i valori \texttt{0.75} e \texttt{1} per evitare eventuali \textit{outliers} senza dover aumentare spropositamente il numero dei vertici
 che nei test di copertura lineare assumono i valori $\{1000, 2000, \ldots, 5000\}$; per la copertura quadratica \texttt{poly} vengono assegnati
 gli valori \texttt{0.75} e \texttt{1} per avere anche un confronto più corretto tra i due metodi di copertura, ma con numeri di vertici che
 assumono i valori $\{100, 200, \ldots, 1000\}$ per evitare lunghi tempi nella generazione dei grafi. Per comprendere meglio la differenza tra copertura
@@ -263,9 +263,9 @@ rispetto ai nodi. In totale si hanno $2 \cdot 10 + 2 \cdot 5 = 30$ grafi da test
 I test vengono quindi fatti passando al metodo \texttt{get\_connected\_components} di ognuno dei grafi le classi che implementano
 l'interfaccia \texttt{DisjointSetsInterface} volta per volta e registrando i tempi attraverso la libreria \texttt{time}, sottraendo
 il valore finale di \texttt{time.time()} a quello iniziale. Questo processo viene ripetuto per tre volte e alla fine viene calcolata
-la media dei tempi impiegati.\newline
+la mediana dei tempi impiegati per evitare ulteriori \textit{outliers}.\newline
 
-Dopodichè i tempi, arrotondati a 3 cifre significative, vengono salvati su un file \texttt{.csv} insieme ai valori di riferimento dei grafi e tramite la libreria \texttt{matplotlib}
+Dopodichè i tempi, arrotondati a 3 cifre dopo la virgola, vengono salvati su un file \texttt{.csv} insieme ai valori di riferimento dei grafi e tramite la libreria \texttt{matplotlib}
 vengono visualizzati i grafici dei tempi medi, uno per ogni valore di copertura, dove sull'asse \textit{x} abbiamo i valori dei numeri di vertici mentre
 sull'asse \textit{y} i valori dei tempi.
 

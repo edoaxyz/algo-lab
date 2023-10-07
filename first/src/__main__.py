@@ -47,11 +47,11 @@ for r in range(ROUNDS):
             end = time.time()
             results[cov][uf_impl][vert][r] = end - start
 
-print("Calculating means...")
+print("Calculating medians...")
 for uf_impl in UF_IMPLEMENTATIONS.values():
     for cov, vert in graphs.keys():
         values = results[cov][uf_impl][vert]
-        values["mean"] = np.mean([time for time in values.values()])
+        values["median"] = np.median([time for time in values.values()])
 
 print("Saving results...")
 with open("results.csv", "w", newline="", encoding="utf-8") as csvfile:
@@ -67,7 +67,7 @@ with open("results.csv", "w", newline="", encoding="utf-8") as csvfile:
             "Numero vertici",
             "Tentativo n.",
             "Tempo",
-            "Media",
+            "Mediana",
         ]
     )
     writer.writerows(
@@ -78,7 +78,7 @@ with open("results.csv", "w", newline="", encoding="utf-8") as csvfile:
             verts,
             r + 1,
             round(results[cov][uf_impl][verts][r], 3),
-            round(results[cov][uf_impl][verts]["mean"], 3),
+            round(results[cov][uf_impl][verts]["median"], 3),
         )
         for cov in results
         for uf_label, uf_impl in UF_IMPLEMENTATIONS.items()
@@ -92,7 +92,7 @@ for cov in results:
     for label, uf_impl in UF_IMPLEMENTATIONS.items():
         plt.plot(
             results[cov][uf_impl].keys(),
-            [values["mean"] for values in results[cov][uf_impl].values()],
+            [values["median"] for values in results[cov][uf_impl].values()],
             label=label,
         )
     plt.title(f"Copertura {cov[0]} {cov[1]*100:.1f}%")
