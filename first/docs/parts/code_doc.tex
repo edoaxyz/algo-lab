@@ -165,8 +165,12 @@ base messe a disposizione dal linguaggio \textit{Python}:
                                     \end{equation}
                                     quindi non si ha variazione dei costi;
                               \item Liste concatenate con euristica dell'unione pesata\linebreak (\texttt{HeuristicDisjointSets}): anche in
-                                    questo caso il costo della \textsc{Find-Set} è costante, quindi vale quanto detto nel punto precedente
-                                    e il costo non varia;
+                                    questo caso il costo della \textsc{Find-Set} è costante, e possiamo aggiungere il numero di queste
+                                    operazioni a \eqref{WUHValues}:
+                                    \begin{equation}
+                                          m = n + 3e + n = \Theta(2v + 3e) = \Theta(v + e)
+                                    \end{equation}
+                                    dimostrando che non vi è alcuna variazione dei costi computazionali;
                               \item Foreste di insiemi disgiunti con compressione dei cammini\linebreak (\texttt{ForestDisjointSets}):
                                     in questo caso il costo della \textsc{Find-Set} non è costante e può richiedere nel caso peggiore
                                     $O(v)$ con $v = |V|$, quindi considerando \eqref{FPCCost}, \eqref{FPCValues} e che il numero di
@@ -174,20 +178,28 @@ base messe a disposizione dal linguaggio \textit{Python}:
                                     \begin{equation}
                                           \label{NewFCCCost}
                                           \begin{aligned}
-                                                n                                          & = v                                                         \\
-                                                f                                          & = 3 e + v                                                   \\
-                                                \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + (3e+v) \cdot ( 1+\log_{2+\frac{3e+v}{v}}v))    \\
-                                                                                           & = O(3e\log_{2+\frac{3e+v}{v}}v + v\log_{2+\frac{3e+v}{v}}v) \\
+                                                f                                          & = 2 e + v = \Theta(e + v)                                \\
+                                                \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + (e+v) \cdot ( 1+\log_{2+\frac{e+v}{v}}v))   \\
+                                                                                           & = O(e\log_{2+\frac{e+v}{v}}v + v\log_{2+\frac{e+v}{v}}v) \\
                                           \end{aligned}
                                     \end{equation}
-                                    con un leggera variazione rispetto a \eqref{FPC2Cost}. Ma riconsiderando il costo sulla base del numero di nodi
-                                    secondo \eqref{coverageEdges}:
+                                    con un leggera variazione rispetto a \eqref{FPC2Cost}. Ma riconsiderando il costo sulla base del numero di vertici
+                                    secondo la copertura lineare \eqref{linearCoverage}:
                                     \begin{equation}
                                           \begin{aligned}
-                                                e                  & = \Theta(v^2)                                                          \\
-                                                \eqref{NewFCCCost} & = O(v^2\log_{2+\frac{3v^2+v}{v}}v+ v\log_{2+\frac{3v^2+v}{v}}v)        \\
-                                                                   & = O(v^2\log_{3v+3}v+ v\log_{3v+3}v)                                    \\
-                                                                   & = O(v^2\log_{3v+3}v) \simeq O(v^2\log_{3v+3}v) = \eqref{WorstFPC2Cost}
+                                                e                  & = \Theta(v)                                           \\
+                                                \eqref{NewFCCCost} & = O(v\log_{2+\frac{2v}{v}}v+ v\log_{2+\frac{2v}{v}}v) \\
+                                                                   & = O(v\log_4v+ v\log_4v)                               \\
+                                                                   & = O(v\log_4v) \simeq O(v\log_3v) = \eqref{linearFPC}
+                                          \end{aligned}
+                                    \end{equation}
+                                    e secondo la copertura quadratica \eqref{quadraticCoverage}:
+                                    \begin{equation}
+                                          \begin{aligned}
+                                                e                  & = \Theta(v^2)                                                       \\
+                                                \eqref{NewFCCCost} & = O(v^2\log_{2+\frac{v^2+v}{v}}v+ v\log_{2+\frac{v^2+v}{v}}v)       \\
+                                                                   & = O(v^2\log_{3+v}v+ v\log_{3+v}v)                                   \\
+                                                                   & = O(v^2\log_{3+v}v) \simeq O(v^2\log_{2+v}v) = \eqref{quadraticFPC}
                                           \end{aligned}
                                     \end{equation}
                                     quindi il costo non varia nemmeno in questo caso;
@@ -204,9 +216,12 @@ base messe a disposizione dal linguaggio \textit{Python}:
                         il numero di connessioni e quando non è specificato è pari ad un numero casuale compreso tra 0 e il numero massimo di
                         archi possibile secondo \eqref{maxedges}; le connessioni vengono scelte casualmente da un pool contenente tutte le possibili
                         connessioni valide utilizzando le librerie \texttt{numpy} e \texttt{itertools};
-                  \item \texttt{random\_generate\_with\_coverage(int, float) $\rightarrow$ Graph}: metodo statico che genera un'istanza
+                  \item \texttt{random\_generate\_with\_poly\_coverage(int, float) $\rightarrow$ Graph}: metodo statico che genera un'istanza
                         di \texttt{Graph} richiamando \texttt{random\_generate}; il primo parametro mantiene lo stesso scopo, il secondo, non più
-                        opzionale, rappresenta la percentuale di connessioni (compresa tra $[0;1]$) che vogliamo nel grafo rispetto a \eqref{maxedges}.
+                        opzionale, rappresenta la copertura polinomiale che viene applicata al grafo secondo \eqref{quadraticCoverage};
+                  \item \texttt{random\_generate\_with\_lin\_coverage(int, float) $\rightarrow$ Graph}: metodo statico che si comporta come
+                        \texttt{random\_generate\_with\_poly\_coverage}, eccezione per il secondo parametro che rappresenta la copertura lineare
+                        che viene applicata al grafo secondo \eqref{linearCoverage};
             \end{enumerate}
 \end{enumerate}
 
@@ -214,37 +229,35 @@ base messe a disposizione dal linguaggio \textit{Python}:
 Questo modulo rappresenta il file principale del progetto e va ad eseguire i test su diversi grafi utilizzando
 le diverse implementazioni per gli insiemi disgiunti.\newline
 
-In prima istanza vengono generati i grafi usati per i test: questi hanno un numero variabile di vertici che vanno da 100 a 1000 in multipli di 100, con 100
-e 1000 inclusi, e un numero variabile di connessioni tali per cui la loro percentuale rispetto al numero massimo (che d'ora in poi chiameremo
-\textit{copertura}) assume uno dei seguenti valori: \texttt{0.002}, \texttt{0.5}, \texttt{1}; il valore \texttt{0.002} corrisponde ad una copertura
-dello 0.2\% garantendo di non avere tutti i vertici in unico insieme disgiunto alla fine della ricerca, infatti per garantire ciò è necessario che il numero
-di connessioni sia sempre minore al numero di vertici, e considerando \eqref{maxedges}:
-\begin{equation}
-      \begin{aligned}
-            0.002 \cdot \frac{n(n-1)}{2} & < n \quad \forall n \in \{100, 200, \ldots, 1000\} \\
-            n(n-1001)                    & < 0                                                \\
-            0                            & < n < 1001
-      \end{aligned}
-\end{equation}
-che risulta soddisfatta per i casi di vertici presi in considerazione. In totale si hanno $3 \cdot 10 = 20$ grafi da testare con le 3 implementazioni
-degli insiemi disgiunti.
+In prima istanza vengono generati i grafi usati per i test sulla base dei valori di copertura assegnati: per la copertura lineare \texttt{lin}
+vengono assegnati i valori \texttt{0.75} e \texttt{1} per evitare eventuali outlier senza dover aumentare spropositamente il numero dei vertici
+che nei test di copertura lineare assumono i valori $\{1000, 2000, \ldots, 5000\}$; per la copertura quadratica \texttt{poly} vengono assegnati
+gli valori \texttt{0.75} e \texttt{1} per avere anche un confronto più corretto tra i due metodi di copertura, ma con numeri di vertici che
+assumono i valori $\{100, 200, \ldots, 1000\}$ per evitare lunghi tempi nella generazione dei grafi. Per comprendere meglio la differenza tra copertura
+lineare e quadratica e individuare il numero di connesioni effettive nella tabella \ref{covTable} vengono mostrati i valori di numeri di connessioni
+rispetto ai nodi. In totale si hanno $2 \cdot 10 + 2 \cdot 5 = 30$ grafi da testare con le 3 implementazioni degli insiemi disgiunti.\newline
 
 \begin{table}[!h]
-      \begin{tabular}{|c|c|}
-            \hline
-            Nodi & Connessioni \\ \hline
-            100  & 9           \\ \hline
-            200  & 39          \\ \hline
-            300  & 89          \\ \hline
-            400  & 159         \\ \hline
-            500  & 249         \\ \hline
-            600  & 359         \\ \hline
-            700  & 489         \\ \hline
-            800  & 639         \\ \hline
-            900  & 809         \\ \hline
-            1000 & 999         \\ \hline
-      \end{tabular}
-      \caption{Numero di connessioni per nodi con copertura 0.2\%}
+      \begin{adjustbox}{center}
+            \begin{tabular}{|c|c|c|c|c|c|c|c|}
+                  \hline
+                  \multicolumn{4}{c|}{Copertura lineare} & \multicolumn{4}{c}{Copertura quadratica}                                                                                                          \\ \hline
+                  \multicolumn{2}{|c|}{75\%}             & \multicolumn{2}{c|}{100\%}               & \multicolumn{2}{c|}{75\%} & \multicolumn{2}{c|}{100\%}                                                 \\ \hline
+                  Vertici                                & Connessioni                              & Vertici                   & Connessioni                & Vertici & Connessioni & Vertici & Connessioni \\ \hline
+                  1000                                   & 750                                      & 1000                      & 1000                       & 100     & 3712        & 100     & 3712        \\ \hline
+                  2000                                   & 1500                                     & 2000                      & 2000                       & 200     & 14925       & 200     & 14925       \\ \hline
+                  3000                                   & 2250                                     & 3000                      & 3000                       & 300     & 33637       & 300     & 33637       \\ \hline
+                  4000                                   & 3000                                     & 4000                      & 4000                       & 400     & 59850       & 400     & 59850       \\ \hline
+                  5000                                   & 3750                                     & 5000                      & 5000                       & 500     & 93562       & 500     & 93562       \\ \hline
+                                                         &                                          &                           &                            & 600     & 134775      & 600     & 134775      \\ \hline
+                                                         &                                          &                           &                            & 700     & 183487      & 700     & 183487      \\ \hline
+                                                         &                                          &                           &                            & 800     & 239700      & 800     & 239700      \\ \hline
+                                                         &                                          &                           &                            & 900     & 303412      & 900     & 303412      \\ \hline
+                                                         &                                          &                           &                            & 1000    & 374625      & 1000    & 374625      \\ \hline
+            \end{tabular}
+      \end{adjustbox}
+      \caption{Numeri di connessioni per nodi basati sui test}
+      \label{covTable}
 \end{table}
 
 I test vengono quindi fatti passando al metodo \texttt{get\_connected\_components} di ognuno dei grafi le classi che implementano

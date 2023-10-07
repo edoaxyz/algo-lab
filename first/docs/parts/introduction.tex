@@ -41,19 +41,28 @@ l'insieme delle connessioni, l'algoritmo è il seguente:
     \end{algorithmic}
 \end{algorithm}
 
+\subsubsection{Copertura dei grafi}
 
-Essendo il grafo $G(V, E)$ non diretto si ha che
-\begin{equation} \label{maxedges}
-    \max(|E|) = \frac{v(v-1)}{2} = \Theta(v^2) \text{ con } v = |V|
-\end{equation}
-dunque il massimo numero di connessioni è minore rispetto al suo equivalente
-per un grafo diretto. Nei prossimi capitoli utilizzeremo il termine di \textit{copertura}\label{coverage} di connessioni: questo indica la percentuale
-di archi all'interno di un grafo non diretto rispetto al suo numero massimo definito in \eqref{maxedges}. Dato $c \in [0;1]$
-valore di copertura, il numero di connessioni è dato da:
-\begin{equation} \label{coverageEdges}
-    |E| = c \cdot \frac{v(v-1)}{2} = \Theta(v^2)
-\end{equation}
+Nei successivi capitoli useremo il termine \textit{copertura} per indicare una percentuale $c \in [0; 1]$ di connessioni rispetto
+ad un numero massimo, definito in base al tipo copertura:
 
+\begin{itemize}
+    \item \textit{Copertura lineare}: è la percentuale di connessioni rispetto al numero di vertici del grafo
+          e ci permetterà di stabilire che il numero di connessioni considerato è un $\Theta(v)$ con $v = |V|$;
+          \begin{equation}
+              e = |E| = c \cdot v = \Theta(v) \label{linearCoverage}
+          \end{equation}
+    \item \textit{Copertura quadratica}: è la percentuale di connessioni rispetto al numero massimo di connessioni
+          possibili; essendo il grafo $G(V, E)$ non diretto si ha che
+          \begin{equation} \label{maxedges}
+              \max(|E|) = \frac{v(v-1)}{2} = \Theta(v^2) \text{ con } v = |V|
+          \end{equation}
+          quindi il numero di connessioni data una copertura quadratica $c$ è dato da:
+          \begin{equation} \label{quadraticCoverage}
+              e = |E| = c \cdot \frac{v(v-1)}{2} = \Theta(v^2)
+          \end{equation}
+          e per indicare il numero di connessioni nei costi computazionali utilizzeremo $\Theta(v^2)$.
+\end{itemize}
 
 \subsection{Implementazioni della struttura dati}
 Come riportato precedentemente, esistono varie implementazioni delle strutture
@@ -127,15 +136,17 @@ dato dalla somma di $n$ con il numero di \textsc{Find-Set} e \textsc{Union} del 
 ciclo stesso:
 
 \begin{equation}
+    \label{WUHValues}
     \begin{aligned}
-        n & = |V|                                 \\
-        m & = n + |E| \cdot (2 + 1) = |V| + 3 |E|
+        n & = |V| = \Theta(|V|)= \Theta(v)                                          \\
+        m & = n + |E| \cdot (2 + 1) = |V| + 3 |E| = \Theta(|V| + |E|) = \Theta(v+e)
     \end{aligned}
 \end{equation}
 
-Quindi, per \eqref{WUHCost}, e indicando con $v = |V|$ e $e = |E|$, il costo complessivo è dato da:
+con $v = |V|$ e $e = |E|$. Quindi per \eqref{WUHCost} il costo complessivo è dato da:
 
 \begin{equation}
+    \label{WUH2Cost}
     \begin{aligned}
         O(m+n\log_2n) & = O((v + 3 e) + v\log_2v) \\
                       & = O(v + 3 e + v\log_2v)   \\
@@ -144,16 +155,23 @@ Quindi, per \eqref{WUHCost}, e indicando con $v = |V|$ e $e = |E|$, il costo com
     \end{aligned}
 \end{equation}
 
-Considerando il costo rispetto al numero di vertici utilizzando la definizione di copertura, per \eqref{coverageEdges} si ha:
+Considerando il costo rispetto al solo numero dei vertici usando la copertura lineare, per \eqref{linearCoverage} si ha:
 
 \begin{equation}
+    \label{linearWUH}
     \begin{aligned}
-        e             & = \Theta(v^2)               \\
-        O(e+v\log_2v) & = O(v^2+ v\log_2v) = O(v^2)
+        O(e+v\log_2v) & = O(v+ v\log_2v) = O(v\log_2v)
     \end{aligned}
 \end{equation}
 
-quindi si ha un costo quadratico.
+mentre usando la copertura quadratica, per \eqref{quadraticCoverage} si ha:
+
+\begin{equation}
+    \label{quadraticWUH}
+    \begin{aligned}
+        O(e+v\log_2v) & = O(v^2+ v\log_2v) = O(v^2)
+    \end{aligned}
+\end{equation}
 
 \subsubsection{Foreste di insiemi disgiunti con compressione dei cammini}
 Questa implementazione prevede di rappresentare ogni elemento di ogni insieme disgiunto
@@ -189,14 +207,13 @@ con $f$ il numero di operazioni \textsc{Find-Set} e $n$ il numero di operazioni 
 
 Nel caso della ricerca di componenti connesse $n$ è dato dal numero delle iterazioni del
 ciclo \textit{for} alla riga \ref{alg:firstfor}, mentre $f$ dipende dal numero di iterazioni
-del ciclo \textit{for} alla riga \ref{alg:secondfor}, e considerando anche la \textsc{Find-Set}
-implicita in \textsc{Union}, abbiamo:
+del ciclo \textit{for} alla riga \ref{alg:secondfor} abbiamo:
 
 \begin{equation}
     \label{FPCValues}
     \begin{aligned}
-        n & = |V|   \\
-        f & = 3 |E|
+        n & = |V| = \Theta(|V|) = \Theta(v)   \\
+        f & = 2 |E| = \Theta(|E|) = \Theta(e)
     \end{aligned}
 \end{equation}
 
@@ -205,22 +222,29 @@ Quindi, per \eqref{FPCCost}, il costo totale è dato da:
 \begin{equation}
     \label{FPC2Cost}
     \begin{aligned}
-        \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + 3e ( 1+\log_{2+\frac{3e}{v}}v)) \\
-                                                   & = \Theta(v + 3e + 3e\log_{2+\frac{3e}{v}}v)  \\
-                                                   & = O(v + 3e\log_{2+\frac{3e}{v}}v)
+        \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + e (1+\log_{2+\frac{e}{v}}v)) \\
+                                                   & = \Theta(v + e + 2e\log_{2+\frac{e}{v}}v) \\
+                                                   & = O(v + e\log_{2+\frac{e}{v}}v)
     \end{aligned}
 \end{equation}
 
-con $v = |V|$ e $e = |E|$.
-
-Considerando il costo rispetto al numero di vertici utilizzando la definizione di copertura, per \eqref{coverageEdges} si ha:
+Considerando il costo rispetto al solo numero dei vertici usando la copertura lineare, per \eqref{linearCoverage} si ha:
 \begin{equation}
-    \label{WorstFPC2Cost}
+    \label{linearFPC}
     \begin{aligned}
-        e                               & = \Theta(v^2)                         \\
-        O(v + 3e\log_{2+\frac{3e}{v}}v) & = O(v + 3v^2\log_{2+\frac{3v^2}{v}}v) \\
-                                        & = O(v + v^2\log_2{2+3v}v)             \\
-                                        & = O(v^2\log_{2+3v}v)
+        O(v + e\log_{2+\frac{e}{v}}v) & = O(v + v\log_{2+\frac{v}{v}}v) \\
+                                      & = O(v + v\log_3v)               \\
+                                      & = O(v\log_3v)
     \end{aligned}
 \end{equation}
 
+mentre usando la copertura quadratica, per \eqref{quadraticCoverage} si ha:
+
+\begin{equation}
+    \label{quadraticFPC}
+    \begin{aligned}
+        O(v + e\log_{2+\frac{e}{v}}v) & = O(v + v^2\log_{2+\frac{v^2}{v}}v) \\
+                                      & = O(v + v^2\log_{2+v}v)             \\
+                                      & = O(v^2\log_{2+v}v)
+    \end{aligned}
+\end{equation}
