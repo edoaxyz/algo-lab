@@ -104,7 +104,7 @@ class Graph:
         max_connections = n_vertices * (n_vertices - 1) / 2
         if n_connections is None:
             n_connections = random.randint(1, max_connections)
-        n_connections = max(max_connections, n_connections)
+        n_connections = min(max_connections, n_connections)
         for sample in np.random.default_rng().choice(
             np.fromiter(combinations(range(n_vertices), 2), tuple), int(n_connections)
         ):
@@ -112,17 +112,31 @@ class Graph:
         return graph
 
     @classmethod
-    def random_generate_with_coverage(
+    def random_generate_with_poly_coverage(
         cls: Type[Self], n_vertices: int, connections_coverage: float
     ) -> Self:
         """
-        Genera un grafo utilizzando la funzione generate_random_graph,
+        Genera un grafo utilizzando la funzione generate_random,
         con il parametro obbligatorio connections_coverage che ammette valori
         tra 0 e 1 che stabilisce il numero di archi (0 -> nessun arco,
-        1 -> tutti i nodi sono collegati tra loro)
+        1 -> tutti i nodi sono fortemente collegati tra loro)
         """
         connections_coverage = max(min(connections_coverage, 1), 0)
 
         return cls.random_generate(
             n_vertices, int(n_vertices * (n_vertices - 1) / 2 * connections_coverage)
         )
+
+    @classmethod
+    def random_generate_with_lin_coverage(
+        cls: Type[Self], n_vertices: int, connections_coverage: float
+    ) -> Self:
+        """
+        Genera un grafo utilizzando la funzione generate_random,
+        con il parametro obbligatorio connections_coverage che ammette valori
+        tra 0 e 1 che stabilisce il numero di archi (0 -> nessun arco,
+        1 -> tutti i nodi sono collegati tra loro)
+        """
+        connections_coverage = max(min(connections_coverage, 1), 0)
+
+        return cls.random_generate(n_vertices, int(n_vertices * connections_coverage))

@@ -16,7 +16,25 @@ oltre all'output generato dal codice \textit{Python} stesso anche il risultato d
 i dati più significativi sono il \texttt{3.99s system} che indica il tempo di CPU usato dal programma e il \texttt{39\% cpu} che indica
 il picco massimo di utilizzo della CPU generato per l'esecuzione del codice.\newline
 
-Passando ai dati invece otteniamo tre grafici che si differenziano per i valori di copertura dei grafi:
+Passando ai dati invece otteniamo tre grafici che si differenziano per i valori di copertura dei grafi, con tre curve
+per ogni grafico che nella legenda sono indicate con:
+\begin{itemize}
+    \item \texttt{LC}: sta per \textit{Liste Concatenate} e indica i tempi dell'implementazione\linebreak \texttt{ListDisjointSets};
+    \item \texttt{LC/EUP}: sta per \textit{Liste Concatenate con Euristica dell'Unione Pesata} e indica i tempi dell'implementazione
+          \texttt{HeuristicDisjointSets}
+    \item \texttt{FCC}: sta per \textit{Foreste con Compressione dei Cammini} e indica i tempi dell'implementazione \texttt{ForestDisjointSets}.
+\end{itemize}
+
+\subsection{Caso copertura 0.2\%}
+
+Distinguiamo il comportamento delle tre curve:
+\begin{enumerate}
+    \item \texttt{LC}: segue il comportamento definito in \eqref{LLCost}, eccetto per l'ultimo campionamento con il numero di nodi
+          $n=1000$ dove i tempi sembrano eguagliare quelli dell'implementazione \texttt{FCC};
+    \item \texttt{LC/EUP}: anche questa segue il comportamento definito in \eqref{WUHCost} in tutti i casi, e considerando la bassa
+          copertura, possiamo affermare che $n > m$, quindi il costo può essere riespresso come $O(n\log_2n)$;
+    \item \texttt{FCC}: 
+\end{enumerate}
 
 \begin{figure}
     \centering

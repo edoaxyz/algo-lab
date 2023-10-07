@@ -32,6 +32,6 @@ class ForestDisjointSets(DisjointSetsInterface):
         return node.parent
 
     def union(self, node_1: TreeNode, node_2: TreeNode) -> TreeNode:
-        set_1, set_2 = node_1, self.find_set(node_2)
+        set_1, set_2 = self.find_set(node_1), self.find_set(node_2)
         set_2.parent = set_1
         return set_1

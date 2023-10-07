@@ -121,7 +121,7 @@ base messe a disposizione dal linguaggio \textit{Python}:
                         della classe questa lista viene inizializzata creando un numero di vertici indicato
                         tra i parametri del costruttore;
                   \item \texttt{\_connections $\rightarrow$ set[tuple[Vertex, Vertex]]}: attributo privato usato
-                        per salvare le connessioni tra nodi usando le strutture dati base \texttt{tuple} usata
+                        per salvare le connessioni tra vertici usando le strutture dati base \texttt{tuple} usata
                         per combinare coppie di oggetti in un singolo oggetto e \texttt{set} per gestire un insieme
                         di queste coppie, evitando eventuali duplicati con inserimenti in tempi costanti;
             \end{enumerate}
@@ -163,7 +163,6 @@ base messe a disposizione dal linguaggio \textit{Python}:
                                     \begin{equation}
                                           \Theta(n^2 + v) = \Theta(v^2 + v) = O(v^2)
                                     \end{equation}
-                                    il risultato è il medesimo anche per \eqref{WorstLLCost}, ovvero quando si ha il numero massimo di archi,
                                     quindi non si ha variazione dei costi;
                               \item Liste concatenate con euristica dell'unione pesata\linebreak (\texttt{HeuristicDisjointSets}): anche in
                                     questo caso il costo della \textsc{Find-Set} è costante, quindi vale quanto detto nel punto precedente
@@ -181,7 +180,8 @@ base messe a disposizione dal linguaggio \textit{Python}:
                                                                                            & = O(3e\log_{2+\frac{3e+v}{v}}v + v\log_{2+\frac{3e+v}{v}}v) \\
                                           \end{aligned}
                                     \end{equation}
-                                    con un leggera variazione rispetto a \eqref{FPC2Cost}. Nel caso peggiore con massimo numero di archi:
+                                    con un leggera variazione rispetto a \eqref{FPC2Cost}. Ma riconsiderando il costo sulla base del numero di nodi
+                                    secondo \eqref{coverageEdges}:
                                     \begin{equation}
                                           \begin{aligned}
                                                 e                  & = \Theta(v^2)                                                          \\
@@ -190,7 +190,7 @@ base messe a disposizione dal linguaggio \textit{Python}:
                                                                    & = O(v^2\log_{3v+3}v) \simeq O(v^2\log_{3v+3}v) = \eqref{WorstFPC2Cost}
                                           \end{aligned}
                                     \end{equation}
-                                    quindi nel caso peggiore il costo non varia;
+                                    quindi il costo non varia nemmeno in questo caso;
                         \end{itemize}
                         in generale consideriamo questa operazione come ininfluente nel calcolo dei costi computazionali;
                   \item \texttt{get\_vertices\_size() $\rightarrow$ int}: ritorna il numero di vertici contenuti nel grafo;
@@ -221,13 +221,31 @@ dello 0.2\% garantendo di non avere tutti i vertici in unico insieme disgiunto a
 di connessioni sia sempre minore al numero di vertici, e considerando \eqref{maxedges}:
 \begin{equation}
       \begin{aligned}
-            0.002 \cdot \frac{n(n-1)}{2} & \le n \quad \forall n \in \{100, 200, \ldots, 1000\} \\
-            n(n-1001)                    & \le 0                                                \\
-            0                            & \le n\le 1001
+            0.002 \cdot \frac{n(n-1)}{2} & < n \quad \forall n \in \{100, 200, \ldots, 1000\} \\
+            n(n-1001)                    & < 0                                                \\
+            0                            & < n < 1001
       \end{aligned}
 \end{equation}
-che risulta soddisfatta per i casi di nodi presi in considerazione. In totale si hanno $3 \cdot 10 = 20$ grafi da testare con le 3 implementazioni
-degli insiemi disgiunti.\newline
+che risulta soddisfatta per i casi di vertici presi in considerazione. In totale si hanno $3 \cdot 10 = 20$ grafi da testare con le 3 implementazioni
+degli insiemi disgiunti.
+
+\begin{table}[!h]
+      \begin{tabular}{|c|c|}
+            \hline
+            Nodi & Connessioni \\ \hline
+            100  & 9           \\ \hline
+            200  & 39          \\ \hline
+            300  & 89          \\ \hline
+            400  & 159         \\ \hline
+            500  & 249         \\ \hline
+            600  & 359         \\ \hline
+            700  & 489         \\ \hline
+            800  & 639         \\ \hline
+            900  & 809         \\ \hline
+            1000 & 999         \\ \hline
+      \end{tabular}
+      \caption{Numero di connessioni per nodi con copertura 0.2\%}
+\end{table}
 
 I test vengono quindi fatti passando al metodo \texttt{get\_connected\_components} di ognuno dei grafi le classi che implementano
 l'interfaccia \texttt{DisjointSetsInterface} volta per volta e registrando i tempi attraverso la libreria \texttt{time}, sottraendo
@@ -235,7 +253,7 @@ il valore finale di \texttt{time.time()} a quello iniziale. Questo processo vien
 la media dei tempi impiegati.\newline
 
 Dopodichè i tempi, arrotondati a 3 cifre significative, vengono salvati su un file \texttt{.csv} insieme ai valori di riferimento dei grafi e tramite la libreria \texttt{matplotlib}
-vengono visualizzati i grafici dei tempi medi, uno per ogni valore di copertura, dove sull'asse \textit{x} abbiamo i valori dei numeri di nodi mentre
+vengono visualizzati i grafici dei tempi medi, uno per ogni valore di copertura, dove sull'asse \textit{x} abbiamo i valori dei numeri di vertici mentre
 sull'asse \textit{y} i valori dei tempi.
 
 

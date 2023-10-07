@@ -10,18 +10,30 @@ from graphs import Graph
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-print("Generating graphs...")
-graphs = {
-    (coverage, n_vertices): Graph.random_generate_with_coverage(n_vertices, coverage)
-    for coverage in [0.002, 0.5, 1]
-    for n_vertices in range(100, 1100, 100)
-}
+COVERAGES = {"lin": [0.75, 1], "poly": [0.75, 1]}
+RANGES = {"lin": range(1000, 5100, 1000), "poly": range(100, 1100, 100)}
 UF_IMPLEMENTATIONS = {
     "LC": ListDisjointSets,
     "LC/EUP": HeuristicDisjointSets,
     "FCC": ForestDisjointSets,
 }
 ROUNDS = 3
+
+print("Generating graphs...")
+graphs = {
+    (
+        (
+            cov_type,
+            coverage,
+        ),
+        n_vertices,
+    ): Graph.random_generate_with_poly_coverage(n_vertices, coverage)
+    if cov_type == "poly"
+    else Graph.random_generate_with_lin_coverage(n_vertices, coverage)
+    for cov_type, coverages in COVERAGES.items()
+    for coverage in coverages
+    for n_vertices in RANGES[cov_type]
+}
 
 results = defaultdict(lambda: defaultdict(lambda: defaultdict(dict)))
 
@@ -49,9 +61,10 @@ with open("results.csv", "w", newline="", encoding="utf-8") as csvfile:
 
     writer.writerow(
         [
-            "Copertura archi",
+            "Tipo copertura",
+            "Valore copertura",
             "Tipo Union Find",
-            "Numero nodi",
+            "Numero vertici",
             "Tentativo n.",
             "Tempo",
             "Media",
@@ -59,7 +72,8 @@ with open("results.csv", "w", newline="", encoding="utf-8") as csvfile:
     )
     writer.writerows(
         (
-            cov,
+            cov[0],
+            cov[1],
             uf_label,
             verts,
             r + 1,
@@ -81,8 +95,8 @@ for cov in results:
             [values["mean"] for values in results[cov][uf_impl].values()],
             label=label,
         )
-    plt.title(f"Copertura {cov*100:.1f}%")
+    plt.title(f"Copertura {cov[0]} {cov[1]*100:.1f}%")
     plt.legend(loc="best")
-    plt.xlabel("Nodi")
+    plt.xlabel("Vertici")
     plt.ylabel("Tempo (s)")
     plt.show()

@@ -19,13 +19,13 @@ possiamo definire tre operazioni fondamentali su di esso:
 \subsection{Ricerca di componenti connesse in grafi}
 
 Un possibile utilizzo di queste strutture dati è nella ricerca di componenti
-connesse in un \textbf{grafo non diretto} (o non orientato), ovvero quando i relativi
-archi non hanno direzione e pertanto collegano due nodi bidirezionalmente,
+connesse in un \textbf{grafo non diretto} (o non orientato), ovvero quando le relative
+connessioni non hanno direzione e pertanto collegano due vertici bidirezionalmente,
 e questo verrà utilizzato per confrontare diverse implementazioni della
 struttura dati.\newline
 
-Dato $G(V,E)$ un grafo non diretto, con $V$ insieme dei nodi del grafo e $E$
-l'insieme degli archi, l'algoritmo è il seguente:
+Dato $G(V,E)$ un grafo non diretto, con $V$ insieme dei vertici del grafo e $E$
+l'insieme delle connessioni, l'algoritmo è il seguente:
 
 \begin{algorithm}
     \caption{Ricerca di componenti connesse}\label{connectedComponentsAlg}
@@ -42,16 +42,18 @@ l'insieme degli archi, l'algoritmo è il seguente:
 \end{algorithm}
 
 
-\fbox{\parbox{\textwidth}{
-        \textbf{Nota sulla complessità computazionale}\newline
-        Essendo il grafo $G(V, E)$ non diretto si ha che
-        \begin{equation} \label{maxedges}
-            \max(|E|) = \frac{n(n-1)}{2} = \Theta(n^2) \text{ con } n = |V|
-        \end{equation}
-        dunque il massimo numero di archi è minore rispetto al suo equivalente
-        per un grafo diretto.
-    }
-}
+Essendo il grafo $G(V, E)$ non diretto si ha che
+\begin{equation} \label{maxedges}
+    \max(|E|) = \frac{v(v-1)}{2} = \Theta(v^2) \text{ con } v = |V|
+\end{equation}
+dunque il massimo numero di connessioni è minore rispetto al suo equivalente
+per un grafo diretto. Nei prossimi capitoli utilizzeremo il termine di \textit{copertura}\label{coverage} di connessioni: questo indica la percentuale
+di archi all'interno di un grafo non diretto rispetto al suo numero massimo definito in \eqref{maxedges}. Dato $c \in [0;1]$
+valore di copertura, il numero di connessioni è dato da:
+\begin{equation} \label{coverageEdges}
+    |E| = c \cdot \frac{v(v-1)}{2} = \Theta(v^2)
+\end{equation}
+
 
 \subsection{Implementazioni della struttura dati}
 Come riportato precedentemente, esistono varie implementazioni delle strutture
@@ -97,8 +99,7 @@ il costo totale è dato da:
     \Theta(v^2) \label{WorstLLCost}
 \end{equation}
 
-con $v = |V|$. Se considero il caso con numero massimo di archi possibile \eqref{maxedges}, il
-risultato non varia.
+con $v = |V|$.
 
 \subsubsection{Liste concatenate con euristica dell'unione pesata}
 Questa implementazione riprende quella delle normali liste concatenate e cerca
@@ -143,7 +144,7 @@ Quindi, per \eqref{WUHCost}, e indicando con $v = |V|$ e $e = |E|$, il costo com
     \end{aligned}
 \end{equation}
 
-Considerando il caso peggiore in cui il numero di archi è massimo, per \eqref{maxedges} si ha:
+Considerando il costo rispetto al numero di vertici utilizzando la definizione di copertura, per \eqref{coverageEdges} si ha:
 
 \begin{equation}
     \begin{aligned}
@@ -153,7 +154,6 @@ Considerando il caso peggiore in cui il numero di archi è massimo, per \eqref{m
 \end{equation}
 
 quindi si ha un costo quadratico.
-\newpage
 
 \subsubsection{Foreste di insiemi disgiunti con compressione dei cammini}
 Questa implementazione prevede di rappresentare ogni elemento di ogni insieme disgiunto
@@ -213,7 +213,7 @@ Quindi, per \eqref{FPCCost}, il costo totale è dato da:
 
 con $v = |V|$ e $e = |E|$.
 
-Nel caso peggiore, con il numero massimo di archi, si ha:
+Considerando il costo rispetto al numero di vertici utilizzando la definizione di copertura, per \eqref{coverageEdges} si ha:
 \begin{equation}
     \label{WorstFPC2Cost}
     \begin{aligned}
