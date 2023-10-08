@@ -28,7 +28,7 @@ per ogni grafico che nella legenda sono indicate con:
 \subsection{Analisi coperture lineari}
 
 Con le coperture lineari ci riferiamo ai casi in cui il numero di connessioni è lineare con il numero di vertici, come riportato in \eqref{linearCoverage}.
-Analizzando i grafici dei tempi in figura \ref{fig:lin75} e \ref{fig:lin100} possiamo concludere che:
+Analizzando i grafici dei tempi in figura \ref{fig:lin75} e \ref{fig:lin100} possiamo stabilire che:
 \begin{enumerate}
     \item \texttt{LC}: sebbene nella figura \ref{fig:lin75} non sia chiaro, la curva segue il comportamento quadratico definito in \eqref{WorstLLCost}
           che si può notare in parte nella figura \ref{fig:lin100};
@@ -97,7 +97,7 @@ Analizzando i grafici dei tempi in figura \ref{fig:lin75} e \ref{fig:lin100} pos
 \subsection{Analisi coperture quadratiche}
 Con le coperture quadratiche ci riferiamo ai casi in cui il numero di connessioni è quadratico con il numero di vertici, come riportato in \eqref{quadraticCoverage}.
 
-Analizzando i grafici dei tempi in figura \ref{fig:poly75} e \ref{fig:poly100} possiamo concludere che:
+Analizzando i grafici dei tempi in figura \ref{fig:poly75} e \ref{fig:poly100} possiamo stabilire che:
 \begin{enumerate}
     \item \texttt{LC}: continua a comportarsi come nel caso delle coperture lineari come previsto in \eqref{WorstLLCost}, e quindi assume una forma quadratica
           in entrambe le figure e quindi in entrambi i valori di copertura;
@@ -172,13 +172,22 @@ Analizzando i grafici dei tempi in figura \ref{fig:poly75} e \ref{fig:poly100} p
 
 \subsection{Considerazioni finali}
 
-LC scelta peggiore in qualsiasi caso
-FCC si comporta bene quando siamo nel caso lineare ma assolutamente no nel caso quadratico -> alternativa union by rank non trattata qua
-LC/EUC è l'implementazione che si comporta meglio in generale in questi test sia in lineare che quadratica
+Alla luce dei risultati dei test possiamo concludere che le tre implementazioni hanno comportamenti differenti
+e incidono notevolmente nella ricerca di componenti connesse. In particolare:
 
-% \begin{figure}
-%     \centering
-%     \captionsetup{justification=centering}
-%     \includegraphics[width=\textwidth]{tests_results/cop100.png}
-%     \caption{Grafico dei tempi di esecuzione per la ricerca di componenti connesse in grafi non diretti con copertura 100\%}
-% \end{figure}
+\begin{itemize}
+    \item L'implementazione con liste concatenate (senza euristiche) \texttt{LC} è quella che si comporta in modo peggiore
+          rispetto alle altre in qualsiasi caso, sia quando il numero di connessioni nel grafo è lineare sia quando è quadratico
+          rispetto al numero di vertici presenti;
+    \item L'implementazione con foreste di nodi con compressione dei cammini \texttt{FCC} è la migliore nel caso di un numero
+          di connessioni lineare rispetto al numero dei vertici, ma quando questi diventano quadratici anche l'implementazione risente
+          di questo aumento e tende a comportarsi in maniera peggiore rispetto a tutte le altre implementazioni; solitamente questo tipo
+          di implementazione viene accompagnata da un'ulteriore euristica nota come \textit{union by rank} che, insieme alla compressione
+          dei cammini, tende ad avere costi computazionali migliori in tutti i casi, ma in questa analisi è stata richiesta l'implementazione
+          della semplice compressione dei cammini;
+    \item L'implementazione con liste concatenate attraverso l'euristica dell'unione pesata, nei casi analizzati, è quella che si comporta
+          complessivamente in maniera migliore, quindi considerando sia il caso di numero di connessioni lineare, sia il caso quadratico,
+          rispetto ai vertici; ad ogni modo non è detto che non si possano trovare implementazioni più veloci di questa, e un esempio è la
+          \textit{union by rank} citata nel punto precedente.
+\end{itemize}
+
