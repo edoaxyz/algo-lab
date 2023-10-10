@@ -8,12 +8,12 @@ possiamo definire tre operazioni fondamentali su di esso:
 \begin{itemize}
     \item \textsc{Make-Set($x$)}: aggiunge a $\mathcal{S}$ un nuovo insieme
           $\mathcal{S}_i = \{x\}$ ($x$ non deve esistere all'interno di alcun altro insieme,
-          altrimenti non sarebbero disgiunti)
-    \item \textsc{Find-Set($x$)}: individua l'elemento rappresentante dell'insieme nel quale $x$ è contenuto
+          altrimenti non sarebbero disgiunti);
+    \item \textsc{Find-Set($x$)}: individua l'elemento rappresentante dell'insieme nel quale $x$ è contenuto;
     \item \textsc{Union($x$, $y$)}: dati $x \in \mathcal{S}_x$ e $y \in \mathcal{S}_y$
           ($x \ne y$ per quanto detto prima) $\mathcal{S} = (\mathcal{S} - \mathcal{S}_x - \mathcal{S}_y) \cup \mathcal{S}_\cup$
           dove $\mathcal{S}_\cup = \mathcal{S}_x \cup \mathcal{S}_y$ il cui rappresentante è
-          dato da uno degli elementi in $\mathcal{S}_x$ o $\mathcal{S}_y$
+          dato da uno degli elementi in $\mathcal{S}_x$ o $\mathcal{S}_y$;
 \end{itemize}
 
 \subsection{Ricerca di componenti connesse in grafi}
@@ -74,7 +74,7 @@ Questa implementazione consiste nel rappresentare gli insiemi disgiunti tramite 
 concatenate. Ogni lista ha due puntatori, uno all'elemento iniziale della lista e uno
 all'elemento finale, permettendo di ottenere in tempo costante il rappresentante di un
 insieme, e di aggiungere elementi ad esso sempre in tempo costante. Ogni elemento della
-lista contiene, oltre ai dati associati, anche un puntatore al suo rappresentante, così da
+lista contiene, oltre ai dati associati, anche un puntatore al suo rappresentante, così da poter
 ottenere in tempo costante il rappresentante di qualsiasi elemento, e un puntatore al
 successivo elemento della lista, come in qualsiasi lista concatenata.\newline
 
@@ -115,7 +115,7 @@ Questa implementazione riprende quella delle normali liste concatenate e cerca
 di ridurre il costo dell'operazione di \textsc{Union} conservando nelle liste
 un parametro che indica il numero di elementi contenuti in esse e questo viene
 usato per unire la lista più corta a quella più lunga, riducendo il numero
-di operazioni. Inoltre, la gestione di un contatore di elementi all'interno di
+di operazioni da svolgere. Inoltre, la gestione di un contatore di elementi all'interno di
 ogni lista ha costo costante, quindi i costi per le rimanenti operazioni
 continuano ad essere i medesimi per le liste concatenate.\newline
 
@@ -191,7 +191,7 @@ dei cammini, i costi delle operazioni base sono i seguenti:
           rappresentante dell'albero espanso.
 \end{itemize}
 
-La compressione del cammino cerca di attenuare i tempi dell'operazione di \textsc{Find-Set}
+La compressione dei cammini cerca di attenuare i tempi dell'operazione di \textsc{Find-Set}
 (che viene utilizzata anche in \textsc{Union} per individuare il rappresentante sul quale
 cambiare padre), andando a ridurre i cammini dai singoli nodi verso la radice dell'albero.
 Ciò viene fatto nell'operazione di \textsc{Find-Set} che diventa una funzione ricorsiva: man
@@ -203,11 +203,12 @@ Con la compressione dei cammini, la struttura dati ha un costo computazionale pa
     \Theta(n + f \cdot (1 + \log_{2+\frac{f}{n}}n) \footnote{\fullcite{forestPathCompression}} \label{FPCCost}
 \end{equation}
 
-con $f$ il numero di operazioni \textsc{Find-Set} e $n$ il numero di operazioni \textsc{Union}.
+con $f$ il numero di operazioni \textsc{Find-Set} e $n$ il numero di operazioni \textsc{Make-Set} 
+(o elementi nei vari insiemi).
 
 Nel caso della ricerca di componenti connesse $n$ è dato dal numero delle iterazioni del
 ciclo \textit{for} alla riga \ref{alg:firstfor}, mentre $f$ dipende dal numero di iterazioni
-del ciclo \textit{for} alla riga \ref{alg:secondfor} abbiamo:
+del ciclo \textit{for} alla riga \ref{alg:secondfor}:
 
 \begin{equation}
     \label{FPCValues}

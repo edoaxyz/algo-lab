@@ -80,11 +80,11 @@ e senza euristica dell'unione pesata. Sono definite al suo interno le seguenti c
       \item \texttt{HeuristicDisjointSets}: eredita \texttt{ListDisjointSets}, quindi implementa\linebreak \texttt{DisjointSetsInterface}
             per gestire gli insiemi disgiunti tramite liste concatenate \textbf{con} euristica dell'unione pesata: questo implica
             che il metodo \texttt{union} controlli prima le dimensioni delle liste tramite il metodo \texttt{get\_size} e sulla base
-            dei esse unire la lista più corta a quella più lunga.
+            dei esse unisca la lista più corta a quella più lunga.
 \end{enumerate}
 
 \subsection{Il modulo \texttt{disjoint\_sets.tree}}
-Questo modulo contiene l'implementazione delle interfacce tramite foreste con compressione del cammino.
+Questo modulo contiene l'implementazione delle interfacce tramite foreste con compressione dei cammini.
 A differenza del modulo precedente dove abbiamo \texttt{List} che rappresenta un insieme disgiunto,
 in questa implementazione non si ha una classe equivalente (e.g. \texttt{Tree}), e si riduce agli
 unici elementi degli alberi. Infatti le classi che lo compongono sono:
@@ -128,7 +128,7 @@ base messe a disposizione dal linguaggio \textit{Python}:
             e dai metodi:
             \begin{enumerate}[resume]
                   \item \texttt{add\_connection(int, int)}: aggiunge una nuova connessione non diretta tra i vertici
-                        usando i relativi indici; gli indici passati vengo riordinati in modo che la sorgente abbia
+                        usando i relativi indici; gli indici passati vengono riordinati in modo che la sorgente abbia
                         sempre indice minore alla destinazione (anche se in grafi non diretti i termini \textit{sorgente}
                         e \textit{destinazione} non hanno differenza) per ridurre il numero di connessioni salvate nel grafo;
                   \item \texttt{get\_connected\_components(Type[DisjointSetsInterface])\linebreak $\rightarrow$ list[list[int]]}:
@@ -207,14 +207,14 @@ base messe a disposizione dal linguaggio \textit{Python}:
                         in generale consideriamo questa operazione come ininfluente nel calcolo dei costi computazionali;
                   \item \texttt{get\_vertices\_size() $\rightarrow$ int}: ritorna il numero di vertici contenuti nel grafo;
                   \item \texttt{get\_connections\_size() $\rightarrow$ int}: ritorna il numero di singole connessioni contenute nel grafo:
-                        se ho una connessione $A \leftrightarrow B$ questa viene contata una sola volta e non come due connessioni distinte
+                        se si ha una connessione $A \leftrightarrow B$ questa viene contata una sola volta e non come due connessioni distinte
                         $A \rightarrow B$ e $B \rightarrow A$;
                   \item \texttt{get\_connection\_coverage() $\rightarrow$ float}: ritorna la percentuale (compresa tra $[0;1]$) delle connessioni
-                        presenti rispetto al numero massimo;
+                        presenti rispetto al numero massimo secondo \eqref{maxedges};
                   \item \texttt{random\_generate(int, \textit{int}) $\rightarrow$ Graph}: metodo statico che permette di generare un'istanza
                         di \texttt{Graph} aggiungendo vertici e connnessioni in maniera casuale; il primo argomento indica il numero di vertici, il secondo
                         il numero di connessioni e quando non è specificato è pari ad un numero casuale compreso tra 0 e il numero massimo di
-                        archi possibile secondo \eqref{maxedges}; le connessioni vengono scelte casualmente da un pool contenente tutte le possibili
+                        archi possibile secondo \eqref{maxedges}; le connessioni vengono scelte casualmente da un pool generato contenente tutte le possibili
                         connessioni valide utilizzando le librerie \texttt{numpy} e \texttt{itertools};
                   \item \texttt{random\_generate\_with\_poly\_coverage(int, float) $\rightarrow$ Graph}: metodo statico che genera un'istanza
                         di \texttt{Graph} richiamando \texttt{random\_generate}; il primo parametro mantiene lo stesso scopo, il secondo, non più
@@ -234,7 +234,7 @@ vengono assegnati i valori \texttt{0.75} e \texttt{1} per evitare eventuali \tex
 che nei test di copertura lineare assumono i valori $\{1000, 2000, \ldots, 5000\}$; per la copertura quadratica \texttt{poly} vengono assegnati
 gli valori \texttt{0.75} e \texttt{1} per avere anche un confronto più corretto tra i due metodi di copertura, ma con numeri di vertici che
 assumono i valori $\{100, 200, \ldots, 1000\}$ per evitare lunghi tempi nella generazione dei grafi. Per comprendere meglio la differenza tra copertura
-lineare e quadratica e individuare il numero di connesioni effettive nella tabella \ref{covTable} vengono mostrati i valori di numeri di connessioni
+lineare e quadratica e individuare il numero di connesioni effettive, nella tabella \ref{covTable} vengono mostrati i valori di numeri di connessioni
 rispetto ai nodi. In totale si hanno $2 \cdot 10 + 2 \cdot 5 = 30$ grafi da testare con le 3 implementazioni degli insiemi disgiunti.\newline
 
 \begin{table}[!h]

@@ -39,7 +39,7 @@ Analizzando i grafici dei tempi in figura \ref{fig:lin75} e \ref{fig:lin100} pos
           eguagli la curva \texttt{LC/EUP}, infatti le leggi dei costi sono pressochè identiche ($O(v\log_2v) \simeq O(v\log_3v)$); in figura
           \ref{fig:lin75} si può anche notare la differenza di base nel logaritmo, che nella curva \texttt{FCC} è 3, mentre nella curva
           \texttt{LC/EUP} è 2 e genera una curva più alta per quest'ultima, quindi denota l'implementazione con foreste e compressione
-          dei cammini più adatta nel caso di copertura lineare.
+          dei cammini come più adatta nel caso di copertura lineare.
 \end{enumerate}
 
 \begin{table}[!h]
@@ -102,7 +102,7 @@ Analizzando i grafici dei tempi in figura \ref{fig:poly75} e \ref{fig:poly100} p
     \item \texttt{LC}: continua a comportarsi come nel caso delle coperture lineari come previsto in \eqref{WorstLLCost}, e quindi assume una forma quadratica
           in entrambe le figure e quindi in entrambi i valori di copertura;
     \item \texttt{LC/EUP}: è la curva più bassa di tutte e quindi mostra che nel caso di copertura quadratica l'implementazione con liste concatenate e euristica dell'unione
-          pesata è quella che si comporta meglio;nella figura \ref{fig:poly100} la curva si avvicina alla curva \texttt{LC} e questo
+          pesata è quella che si comporta meglio; nella figura \ref{fig:poly100} la curva si avvicina alla curva \texttt{LC} e questo
           torna col fatto che le due implementazioni condividono lo stesso costo secondo \eqref{WorstLLCost} e \eqref{quadraticWUH};
     \item \texttt{FCC}: è la curva che si comporta in maniera peggiore rispetto alle altre in entrambi i valori di copertura ed è giustificabile secondo
           \eqref{quadraticFPC}.
