@@ -182,9 +182,9 @@ e incidono notevolmente nella ricerca di componenti connesse. In particolare:
     \item L'implementazione con foreste di nodi con compressione dei cammini \texttt{FCC} è la migliore nel caso di un numero
           di connessioni lineare rispetto al numero dei vertici, ma quando questi diventano quadratici anche l'implementazione risente
           di questo aumento e tende a comportarsi in maniera peggiore rispetto a tutte le altre implementazioni; solitamente questo tipo
-          di implementazione viene accompagnata da un'ulteriore euristica nota come \textit{union by rank} che, insieme alla compressione
-          dei cammini, tende ad avere costi computazionali migliori in tutti i casi, ma in questa analisi è stata richiesta l'implementazione
-          della semplice compressione dei cammini;
+          di implementazione viene accompagnata da un'ulteriore euristica nota come \textit{union by rank}\footfullcite{unionByRank} che,
+          insieme alla compressione dei cammini, tende ad avere costi computazionali migliori in tutti i casi\footfullcite{unionByRankCost},
+          ma in questa analisi è stata richiesta l'implementazione della semplice compressione dei cammini;
     \item L'implementazione con liste concatenate attraverso l'euristica dell'unione pesata, nei casi analizzati, è quella che si comporta
           complessivamente in maniera migliore, quindi considerando sia il caso di numero di connessioni lineare, sia il caso quadratico,
           rispetto ai vertici; ad ogni modo non è detto che non si possano trovare implementazioni più veloci di questa, e un esempio è la
