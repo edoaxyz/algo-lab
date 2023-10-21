@@ -178,9 +178,8 @@ base messe a disposizione dal linguaggio \textit{Python}:
                                     \begin{equation}
                                           \label{NewFCCCost}
                                           \begin{aligned}
-                                                f                                          & = 2 e + v = \Theta(e + v)                                \\
-                                                \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + (e+v) \cdot ( 1+\log_{2+\frac{e+v}{v}}v))   \\
-                                                                                           & = O(e\log_{2+\frac{e+v}{v}}v + v\log_{2+\frac{e+v}{v}}v) \\
+                                                f                                          & = 2 e + v = \Theta(e + v)                              \\
+                                                \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + (e+v) \cdot ( 1+\log_{2+\frac{e+v}{v}}v)) \\
                                           \end{aligned}
                                     \end{equation}
                                     con un leggera variazione rispetto a \eqref{FPC2Cost}. Ma riconsiderando il costo sulla base del numero di vertici
@@ -188,18 +187,18 @@ base messe a disposizione dal linguaggio \textit{Python}:
                                     \begin{equation}
                                           \begin{aligned}
                                                 e                  & = \Theta(v)                                           \\
-                                                \eqref{NewFCCCost} & = O(v\log_{2+\frac{2v}{v}}v+ v\log_{2+\frac{2v}{v}}v) \\
-                                                                   & = O(v\log_4v+ v\log_4v)                               \\
+                                                \eqref{NewFCCCost} & = \Theta(v + (2v) \cdot (1 + \log_{2+\frac{2v}{v}}v)) \\
+                                                                   & = \Theta(v + v\log_4v)                                \\
                                                                    & = O(v\log_4v) \simeq O(v\log_3v) = \eqref{linearFPC}
                                           \end{aligned}
                                     \end{equation}
                                     e secondo la copertura quadratica \eqref{quadraticCoverage}:
                                     \begin{equation}
                                           \begin{aligned}
-                                                e                  & = \Theta(v^2)                                                       \\
-                                                \eqref{NewFCCCost} & = O(v^2\log_{2+\frac{v^2+v}{v}}v+ v\log_{2+\frac{v^2+v}{v}}v)       \\
-                                                                   & = O(v^2\log_{3+v}v+ v\log_{3+v}v)                                   \\
-                                                                   & = O(v^2\log_{3+v}v) \simeq O(v^2\log_{2+v}v) = \eqref{quadraticFPC}
+                                                e                  & = \Theta(v^2)                                                             \\
+                                                \eqref{NewFCCCost} & = \Theta(v + (v^2 + v) \cdot (1 + \log_{2+\frac{v^2+v}{v}}v))             \\
+                                                                   & = \Theta(v^2 + v + v^2\log_{3+v}v + v\log_{3+v}v)                         \\
+                                                                   & = O(v^2 + v^2\log_{3+v}v) \simeq O(v^2 + v^2\log_{2+v}v) = \eqref{quadraticFPC}
                                           \end{aligned}
                                     \end{equation}
                                     quindi il costo non varia nemmeno in questo caso;

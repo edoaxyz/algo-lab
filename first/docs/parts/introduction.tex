@@ -120,7 +120,7 @@ ogni lista ha costo costante, quindi i costi per le rimanenti operazioni
 continuano ad essere i medesimi per le liste concatenate.\newline
 
 In generale, data una sequenza di $m$ operazioni di \textsc{Make-Set}, \textsc{Find-Set}
-and \textsc{Union}, $n$ delle quali sono operazioni di \textsc{Make-Set} (i.e., $n$
+e \textsc{Union}, $n$ delle quali sono operazioni di \textsc{Make-Set} (i.e., $n$
 è il numero di elementi totali all'interno della struttura dati), il costo computazionale
 è dato da:
 
@@ -200,10 +200,10 @@ i padri dei nodi salvati vengono aggiornati con la radice individuata.\newline
 
 Con la compressione dei cammini, la struttura dati ha un costo computazionale pari a:
 \begin{equation}
-    \Theta(n + f \cdot (1 + \log_{2+\frac{f}{n}}n) \footnote{\fullcite{forestPathCompression}} \label{FPCCost}
+    \Theta(n + f \cdot (1 + \log_{2+\frac{f}{n}}n)) \footnote{\fullcite{forestPathCompression}} \label{FPCCost}
 \end{equation}
 
-con $f$ il numero di operazioni \textsc{Find-Set} e $n$ il numero di operazioni \textsc{Make-Set} 
+con $f$ il numero di operazioni \textsc{Find-Set} e $n$ il numero di operazioni \textsc{Make-Set}
 (o elementi nei vari insiemi).
 
 Nel caso della ricerca di componenti connesse $n$ è dato dal numero delle iterazioni del
@@ -224,8 +224,7 @@ Quindi, per \eqref{FPCCost}, il costo totale è dato da:
     \label{FPC2Cost}
     \begin{aligned}
         \Theta(n+f\cdot (1+\log_{2+\frac{f}{n}}n)) & = \Theta(v + e (1+\log_{2+\frac{e}{v}}v)) \\
-                                                   & = \Theta(v + e + 2e\log_{2+\frac{e}{v}}v) \\
-                                                   & = O(v + e\log_{2+\frac{e}{v}}v)
+                                                   & = \Theta(v + e + 2e\log_{2+\frac{e}{v}}v)
     \end{aligned}
 \end{equation}
 
@@ -233,9 +232,9 @@ Considerando il costo rispetto al solo numero dei vertici usando la copertura li
 \begin{equation}
     \label{linearFPC}
     \begin{aligned}
-        O(v + e\log_{2+\frac{e}{v}}v) & = O(v + v\log_{2+\frac{v}{v}}v) \\
-                                      & = O(v + v\log_3v)               \\
-                                      & = O(v\log_3v)
+        \Theta(v + e + e\log_{2+\frac{e}{v}}v) & = \Theta(v + v\log_{2+\frac{v}{v}}v) \\
+                                               & = O(v + v\log_3v)                    \\
+                                               & = O(v\log_3v)
     \end{aligned}
 \end{equation}
 
@@ -244,8 +243,8 @@ mentre usando la copertura quadratica, per \eqref{quadraticCoverage} si ha:
 \begin{equation}
     \label{quadraticFPC}
     \begin{aligned}
-        O(v + e\log_{2+\frac{e}{v}}v) & = O(v + v^2\log_{2+\frac{v^2}{v}}v) \\
-                                      & = O(v + v^2\log_{2+v}v)             \\
-                                      & = O(v^2\log_{2+v}v)
+        \Theta(v + e + e\log_{2+\frac{e}{v}}v) & = \Theta(v + v^2 + v^2\log_{2+\frac{v^2}{v}}v) \\
+                                               & = \Theta(v + v^2 + v^2\log_{2+v}v)             \\
+                                               & = O(v^2 + v^2\log_{2+v}v)                      \\
     \end{aligned}
 \end{equation}
